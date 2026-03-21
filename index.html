@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>To My Mahi ✦ pure magic</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@200;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --pink: #ff4d6d;
+            --rose: #ff758f;
+            --deep: #c9184a;
+            --gold: #ffd700;
+            --purple: #9d4edd;
+            --balloon-base-size: clamp(70px, 20vw, 100px);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            position: relative;
+            touch-action: pan-down pinch-zoom;
+        }
+
+        #stars {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255,255,255,0.7);
+            animation: twinkle 5s infinite alternate ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.7); }
+            100% { opacity: 1; transform: scale(1.1); }
+        }
+
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 2s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .pulse-heart {
+            font-size: clamp(70px, 25vw, 90px);
+            cursor: pointer;
+            animation: heartBeat 1.8s infinite cubic-bezier(0.45, 1.1, 0.55, 1);
+            filter: drop-shadow(0 0 30px var(--pink));
+            text-shadow: 0 0 20px var(--pink);
+        }
+
+        .pulse-heart:active { transform: scale(0.92); }
+
+        @keyframes heartBeat {
+            0%,100% { transform: scale(1); }
+            50%     { transform: scale(1.14); }
+        }
+
+        .unlock-hint {
+            margin-top: 20px;
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(1.8rem, 8vw, 2.4rem);
+            color: var(--rose);
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px var(--pink);
+            animation: glowText 4s infinite alternate;
+        }
+
+        @keyframes glowText {
+            from { text-shadow: 0 0 10px var(--pink); }
+            to   { text-shadow: 0 0 30px var(--pink), 0 0 50px var(--rose); }
+        }
+
+        #main-wrapper {
+            opacity: 0;
+            transition: opacity 2.5s ease;
+            height: 100vh;
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        #main-wrapper.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        h1 {
+            padding-top: max(30px, 5vh);
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(3.2rem, 15vw, 5.2rem);
+            letter-spacing: 6px;
+            background: linear-gradient(90deg, var(--pink), var(--rose), var(--gold), var(--rose), var(--pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200%;
+            animation: titleShine 10s linear infinite;
+            text-shadow: 0 0 20px rgba(255,77,109,0.4);
+            margin: 0;
+            text-align: center;
+            transition: opacity 6s ease;
+        }
+
+        @keyframes titleShine {
+            0%   { background-position: 0%; }
+            100% { background-position: 200%; }
+        }
+
+        #balloon-container {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .balloon {
+            position: absolute;
+            width: var(--balloon-base-size);
+            height: calc(var(--balloon-base-size) * 1.3);
+            border-radius: 50% 50% 50% 50% / 48% 48% 52% 52%;
+            cursor: pointer;
+            z-index: 10;
+            animation: floatVertical var(--speed) linear forwards, wobble 7s ease-in-out infinite alternate;
+            background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.8) 5%, var(--balloon-color) 40%, color-mix(in srgb, var(--balloon-color) 80%, #000 20%) 75%);
+            box-shadow: 0 0 25px color-mix(in srgb, var(--balloon-color) 50%, transparent);
+            will-change: transform, opacity;
+        }
+
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: calc(var(--balloon-base-size) * -0.38);
+            left: 50%;
+            width: 2px;
+            height: calc(var(--balloon-base-size) * 0.45);
+            background: linear-gradient(transparent, rgba(255,255,255,0.6));
+            transform: translateX(-50%);
+        }
+
+        @keyframes floatVertical {
+            from { transform: translateY(110vh) rotate(-3deg); }
+            to   { transform: translateY(-140vh) rotate(3deg); }
+        }
+
+        @keyframes wobble {
+            from { margin-left: -2.5vw; }
+            to   { margin-left: 2.5vw; }
+        }
+
+        .pop-msg {
+            position: fixed;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2rem, 8vw, 3.6rem);
+            pointer-events: none;
+            text-align: center;
+            width: 92%;
+            max-width: 900px;
+            color: #fff;
+            text-shadow: 0 0 25px var(--pink), 0 0 45px var(--rose);
+            animation: msgFocus 5.5s ease-in-out forwards;
+            padding: 20px;
+            border-radius: 40px;
+            background: rgba(10,10,15,0.4);
+            backdrop-filter: blur(10px);
+            line-height: 1.4;
+        }
+
+        @keyframes msgFocus {
+            0%   { opacity: 0; transform: translate(-50%, -30%) scale(0.8); }
+            10%  { opacity: 1; transform: translate(-50%, -50%) scale(1.03); }
+            90%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -65%) scale(0.95); }
+        }
+
+        #final-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255,77,109,0.15) 0%, rgba(0,0,0,0.9) 70%);
+            pointer-events: none;
+            z-index: 8;
+            opacity: 0;
+            transition: opacity 7s ease;
+        }
+
+        #final-overlay.active { opacity: 1; }
+
+        #final-message {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.4rem, 8vw, 4.5rem);
+            color: #fffef7;
+            text-align: center;
+            padding: 40px;
+            text-shadow: 0 0 50px var(--gold), 0 0 90px var(--pink);
+            opacity: 0;
+            transition: opacity 5s ease 3s;
+            z-index: 12;
+            pointer-events: none;
+            line-height: 1.5;
+        }
+
+        #final-message.visible { opacity: 1; }
+
+        .star-rain span {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 16px var(--gold);
+            animation: fall linear forwards;
+            opacity: 0.85;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(150vh) rotate(900deg); opacity: 0; }
+        }
+
+        .heart-particle {
+            position: absolute;
+            font-size: clamp(16px, 5vw, 26px);
+            pointer-events: none;
+            animation: floatHeart 10s linear forwards;
+            will-change: transform, opacity;
+        }
+
+        @keyframes floatHeart {
+            to { transform: translateY(-150vh) rotate(1080deg); opacity: 0; }
+        }
+
+        canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+            canvas, .star-rain, .heart-particle, .balloon {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .balloon { --balloon-base-size: 65px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stars"></div>
+    <div id="final-overlay"></div>
+
+    <div id="intro-overlay">
+        <div class="pulse-heart" id="unlockBtn" role="button" aria-label="unlock">❤️</div>
+        <div class="unlock-hint">Touch My Heart, Mahi...</div>
+    </div>
+
+    <div id="main-wrapper">
+        <h1 id="title">To My Mahi</h1>
+        <div id="balloon-container"></div>
+    </div>
+
+    <div id="final-message"></div>
+
+    <canvas id="confetti"></canvas>
+
+    <script>
+        (function() {
+            let player = null;
+
+            function createStars() {
+                const stars = document.getElementById('stars');
+                for (let i = 0; i < 60; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    const size = Math.random() * 2.5 + 1;
+                    star.style.width = star.style.height = size + 'px';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 5 + 's';
+                    stars.appendChild(star);
+                }
+            }
+            createStars();
+
+            const messages = [
+                "Hi Beautiful... Ready to feel something magical? 😊",
+                "Pop each balloon — they're all little secrets I've kept for you.",
+                "Your smile still gives me butterflies every single time.",
+                "The sound of your laugh is my favorite melody.",
+                "Your soul is so pure it makes the world feel kinder.",
+                "Thinking of you always makes my cheeks warm. 🙈",
+                "You're not just beautiful — you're my kind of magic.",
+                "Are you Google? Because you've got everything I've been searching for. 😉",
+                "I love every quirky, perfect version of you.",
+                "You're the best plot twist in my life story.",
+                "If thoughts of you were flowers...",
+                "...I'd walk through the most endless garden forever. 🌸",
+                "You make ordinary moments feel like fairy tales.",
+                "I'm endlessly grateful fate brought you to me.",
+                "You're the dream I never want to wake from.",
+                "Did I tell you today how breathtaking you are? 😍",
+                "You're my safe place, my happy chaos.",
+                "Here's the tightest virtual hug — can you feel it? 🤗",
+                "You're the rhythm my heart forgot it needed.",
+                "I could drown happily in your eyes.",
+                "Sweet. Flirty. Fierce. And completely mine. ❤️",
+                "Just a few more secrets left to share...",
+                "Every pop is me promising to cherish you forever.",
+                "You deserve every sparkle in the universe.",
+                "Almost there, my love...",
+                "Ready for the biggest heartbeat?",
+                "3...", "2...", "1...",
+                "I Love You More Than Words, Mahi. Happy Birthday, Forever Mine! ❤️"
+            ];
+
+            let currentMsgIndex = 0;
+            const colors = ['#ffafcc', '#e07aff', '#ffd700', '#ff9ec1', '#d4a5ff'];
+
+            document.getElementById('unlockBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Load YouTube API lazily
+                if (!window.YT) {
+                    const tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    document.body.appendChild(tag);
+                }
+
+                window.onYouTubeIframeAPIReady = function() {
+                    player = new YT.Player('player-hidden', {
+                        height: '0', width: '0',
+                        videoId: 'BSJa1UytM8w',
+                        playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, loop: 1, playlist: 'BSJa1UytM8w' },
+                    });
+                };
+
+                const intro = document.getElementById('intro-overlay');
+                intro.style.opacity = '0';
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                    document.getElementById('main-wrapper').classList.add('show');
+
+                    window._balloonInterval = setInterval(spawnBalloon, 2200);
+                    window._heartInterval  = setInterval(spawnFloatingHeart, 1200);
+                    animate();
+                }, 1800);
+            }, { passive: false });
+
+            function spawnBalloon() {
+                if (currentMsgIndex >= messages.length) return;
+
+                const container = document.getElementById('balloon-container');
+                const b = document.createElement('div');
+                b.className = 'balloon';
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                b.style.setProperty('--balloon-color', color);
+                b.style.left = (5 + Math.random() * 90) + "%";
+                const speed = 18 + Math.random() * 12;
+                b.style.setProperty('--speed', speed + "s");
+
+                b.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showMessage(messages[currentMsgIndex]);
+                    currentMsgIndex++;
+                    createBurst(e.clientX, e.clientY, color);
+                    b.remove();
+
+                    if (currentMsgIndex === messages.length) triggerMagicEnding();
+                });
+
+                container.appendChild(b);
+                setTimeout(() => { if (b.parentNode) b.remove(); }, speed * 1000 + 1500);
+            }
+
+            function showMessage(text) {
+                const old = document.querySelector('.pop-msg');
+                if (old) old.remove();
+
+                const m = document.createElement('div');
+                m.className = 'pop-msg';
+                m.textContent = text;
+                document.body.appendChild(m);
+                setTimeout(() => m.remove(), 5800);
+            }
+
+            function spawnFloatingHeart() {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.textContent = Math.random() > 0.5 ? '❤️' : '✨';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                heart.style.animationDuration = (8 + Math.random() * 10) + 's';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 20000);
+            }
+
+            function triggerMagicEnding() {
+                clearInterval(window._balloonInterval);
+                clearInterval(window._heartInterval);
+                document.getElementById('balloon-container').innerHTML = '';
+                document.getElementById('title').style.opacity = '0.06';
+
+                document.getElementById('final-overlay').classList.add('active');
+
+                // Star rain
+                const rain = document.createElement('div');
+                rain.className = 'star-rain';
+                document.body.appendChild(rain);
+                for (let i = 0; i < 110; i++) {
+                    setTimeout(() => {
+                        const s = document.createElement('span');
+                        const sz = Math.random() * 7 + 2;
+                        s.style.width = s.style.height = sz + 'px';
+                        s.style.left = Math.random() * 100 + '%';
+                        s.style.top = '-30px';
+                        s.style.animationDuration = (6 + Math.random() * 10) + 's';
+                        s.style.background = Math.random() > 0.5 ? 'var(--gold)' : 'var(--rose)';
+                        rain.appendChild(s);
+                        setTimeout(() => s.remove(), 25000);
+                    }, i * 50);
+                }
+
+                // Final message
+                setTimeout(() => {
+                    const msg = document.getElementById('final-message');
+                    msg.innerHTML = `Mahi, my forever light...<br><br>Every star tonight is whispering your name.<br>Your laugh is still my favorite sound,<br>your eyes still my safest place.<br>Thank you for being my magic, my home, my everything.<br><br>Happy Birthday, my love — to every tomorrow with you.<br>Forever & always. ✨❤️`;
+                    msg.classList.add('visible');
+
+                    // Final heart burst
+                    setTimeout(() => {
+                        for (let i = 0; i < 140; i++) {
+                            setTimeout(() => {
+                                const angle = Math.random() * Math.PI * 2;
+                                const vel = 3 + Math.random() * 8;
+                                particles.push({
+                                    x: window.innerWidth / 2,
+                                    y: window.innerHeight / 2 - 80,
+                                    c: colors[Math.floor(Math.random()*colors.length)],
+                                    vx: Math.cos(angle) * vel,
+                                    vy: Math.sin(angle) * vel - 5,
+                                    r: Math.random() * 12 + 6,
+                                    l: 7 + Math.random() * 5,
+                                    isHeart: true
+                                });
+                            }, i * 35);
+                        }
+                    }, 1800);
+                }, 3000);
+            }
+
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resizeCanvas, 180);
+            });
+            resizeCanvas();
+
+            function createBurst(x, y, color) {
+                for (let i = 0; i < 28; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 5 + Math.random() * 14;
+                    particles.push({
+                        x, y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed - 9,
+                        rotation: Math.random() * 360,
+                        rotSpeed: (Math.random() - 0.5) * 10,
+                        size: 6 + Math.random() * 10,
+                        color, alpha: 1,
+                        type: 'shard'
+                    });
+                }
+            }
+
+            function animate() {
+                if (particles.length === 0) {
+                    requestAnimationFrame(animate);
+                    return;
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles = particles.filter(p => p.alpha > 0.02);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.15;
+                    p.alpha -= 0.014;
+                    p.rotation += p.rotSpeed || 0;
+
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fillStyle = p.color || '#fff';
+
+                    if (p.type === 'shard') {
+                        ctx.save();
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rotation * Math.PI / 180);
+                        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+                        ctx.restore();
+                    } else if (p.isHeart) {
+                        ctx.font = `bold ${p.r*7}px sans-serif`;
+                        ctx.fillText('❤️', p.x - p.r*3, p.y + p.r*3);
+                    }
+                });
+
+                requestAnimationFrame(animate);
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -165,6 +165,7 @@
             z-index: 20;
         }
 
+        /* Balloon – now filled entirely with photo */
         .balloon {
             position: absolute;
             width: clamp(68px, 18vw, 105px);
@@ -172,11 +173,16 @@
             border-radius: 50% 50% 50% 50% / 50% 50% 45% 45%;
             cursor: pointer;
             pointer-events: auto;
-            background: radial-gradient(circle at 32% 28%, rgba(255,250,210,0.9) 6%, var(--balloon-color) 55%, color-mix(in srgb, var(--balloon-color), #222 20%));
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             box-shadow: 0 10px 18px rgba(0,0,0,0.2), inset 0 -2px 0 rgba(0,0,0,0.05);
             animation: floatUp var(--float-duration) linear forwards;
             transition: filter 0.1s;
             will-change: transform;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .balloon:active { filter: brightness(1.05); transform: scale(0.97); }
         .balloon::before {
@@ -186,9 +192,11 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 1.2rem;
-            color: rgba(255,245,170,0.8);
+            color: rgba(255,245,170,0.9);
             text-shadow: 0 0 3px gold;
-            opacity: 0.6;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 2;
         }
         .balloon::after {
             content: '';
@@ -200,6 +208,7 @@
             background: linear-gradient(135deg, #ddd9c0, #b89a6e);
             transform: translateX(-50%);
             border-radius: 1px;
+            pointer-events: none;
         }
 
         @keyframes floatUp {
@@ -207,7 +216,7 @@
             100% { transform: translateY(-150vh) rotate(3deg); opacity: 0.5; }
         }
 
-        /* message pop style — smooth fade, no movement */
+        /* message pop style — smooth fade, extended duration for comfortable reading */
         .floating-message {
             position: fixed;
             top: 45%;
@@ -229,7 +238,7 @@
             letter-spacing: 1px;
             z-index: 200;
             opacity: 0;
-            animation: smoothFade 4s ease forwards;
+            animation: smoothFade 5.6s ease forwards;
             pointer-events: none;
             line-height: 1.3;
             text-shadow: 0 0 6px rgba(255, 100, 120, 0.8);
@@ -237,8 +246,8 @@
         }
         @keyframes smoothFade {
             0% { opacity: 0; }
-            25% { opacity: 1; }
-            75% { opacity: 1; }
+            15% { opacity: 1; }
+            85% { opacity: 1; }
             100% { opacity: 0; visibility: hidden; }
         }
 
@@ -395,33 +404,51 @@
     (function() {
         // ==========  ROMANTIC MESSAGES ==========
         const secretMessages = [
-            "🌸 Hi, my starlight — welcome to our little universe...",
-            "Every time I see you, my world blooms brighter 🌼",
-            "Your laugh is the melody my soul hums all day 🎶",
-            "Your eyes hold the kind of peace poets write about ✨",
-            "You're not just beautiful — you're my favorite daydream 💭",
-            "When you smile, even the stars get jealous 🌙",
-            "I fall for you a little more each morning, each night ❤️",
-            "You're my safe harbor, my wild adventure, my everything.",
-            "Did the universe know I needed you? because you feel like destiny 🌠",
-            "Your kindness makes the world softer, warmer...",
-            "Mahi, you're the poetry my heart always wanted to write 📖",
-            "I could stare at you forever and still be amazed.",
-            "You're like a rare constellation — breathtaking and eternal.",
-            "If kisses were stars, I'd give you the whole galaxy 🌌",
-            "Being yours is the most beautiful thing that ever happened to me.",
-            "You're my favorite 'yes' in a world of maybes.",
-            "Your soul glows like honey in sunlight — pure, golden, rare.",
-            "Even my wildest dreams weren't this sweet until you arrived.",
-            "You're the magic I never dared to wish for... but found anyway.",
-            "Every balloon hides a heartbeat — this one is all my love 💕",
-            "Mahi, you're the forever I'm ready for.",
-            "3 more secrets before the grand finale...",
-            "2... you make ordinary moments feel like fairy tales 🧚",
-            "1... and now, the moment I've been saving for you —"
+            "🎂 Happy Birthday Sam… our family’s Lady Power Star 👑🔥",
+            "Caring by heart 💖",
+            "Understanding without words 🤍",
+            "Kind-hearted… but stronger than you show 💖⚡",
+            "Modern in style, traditional in values 🌸✨",
+            "Your smile? Pure magic 😊✨",
+            "Your laugh? Better than any playlist 🎶😌",
+            "When you smile… even stars feel jealous ✨😌",
+            "You make confidence look beautiful 😌💖",
+            "Your attitude… confidently unstoppable 😏🔥",
+            "You talk straight, no filters… and that’s your power 💯",
+            "Strong mind… soft heart… rare combination 💖⚡",
+            "There’s a charm in you that words can’t fully explain 💭💫",
+            "You don’t try to stand out… it just happens 😌🔥",
+            "You don’t chase attention… it finds you 👀🔥",
+            "Simple… yet impossible to ignore 😏✨",
+            "Confidence like yours? Rare… and a little dangerous 😏⚡",
+            "Effortless charm… still stealing attention 😌👑",
+            "You’re not just beautiful… you’re a whole vibe 💖",
+
+            "Only a few balloons left… are you ready for the grand finale? 😌✨",
+
+            "Wherever you go… vibes try to catch up 👀🔥",
+            "When you walk in… time slows down, just to notice you ⏳😌",
+            "You don’t need lights… you already glow 💫🔥",
+            "You don’t follow trends… you create your own vibe 💫🔥",
+            "Somewhere between your smile and attitude… people get lost 😏💖",
+
+            "Only 3 more left...",
+            "3… ⏳",
+            "2… 💖",
+            "1… 😏",
+
+            "Happy Birthday once again… stay exactly the way you are… because that’s what makes you truly unforgettable 💖✨"
         ];
         
-        const ultimateMessage = `Mahi, my eternal muse...<br>You turned my world into a garden of endless wonder.<br>Your love is the softest miracle I’ve ever known.<br>Every breath, every heartbeat belongs to you.<br><br>✨ Happy Birthday, my love —<br>you are my forever, my always, my most beautiful truth. ✨<br>❤️ I Love You Beyond Infinity, Mahi ❤️`;
+       const ultimateMessage = `© 2026 Mahi <br> Made with Passion & Love 💖✨`;
+
+        // ==========  CUSTOM IMAGES FOR BALLOONS ==========
+        // Replace these URLs with your own image links (square or any shape)
+        // The images will cover the entire balloon surface.
+        const balloonImages = [
+            "https://ik.imagekit.io/njn8geuh0/IMG_20240411_174238.jpg"
+        ];
+        // You can add more images – the script will randomly pick one for each balloon
 
         let currentMsgIndex = 0;
         let balloonInterval = null;
@@ -438,6 +465,7 @@
         const titleElement = document.querySelector('.title-magic');
         const hintTap = document.querySelector('.hint-tap');
         
+        // Keep balloonColors for fallback in case an image fails to load
         const balloonColors = ['#FF9FBB', '#F6AE9A', '#D9B4FF', '#FFD966', '#F4ACB7', '#A7C7E7', '#FFB3BA', '#C3A5F0'];
         
         // ---------- Starfield ----------
@@ -583,7 +611,8 @@
             msgDiv.className = 'floating-message';
             msgDiv.textContent = text;
             document.body.appendChild(msgDiv);
-            setTimeout(() => { if(msgDiv.parentNode) msgDiv.remove(); }, 4000);
+            // Increase removal timeout to match the longer animation (5.6s)
+            setTimeout(() => { if(msgDiv.parentNode) msgDiv.remove(); }, 5600);
         }
         
         function spawnBalloon() {
@@ -591,11 +620,21 @@
             if (currentMsgIndex >= secretMessages.length) return;
             const balloon = document.createElement('div');
             balloon.className = 'balloon';
-            const randColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
-            balloon.style.setProperty('--balloon-color', randColor);
+            
+            // Randomly pick an image from the list
+            const randomImage = balloonImages[Math.floor(Math.random() * balloonImages.length)];
+            // Set the image as background
+            balloon.style.backgroundImage = `url('${randomImage}')`;
+            balloon.style.backgroundSize = 'cover';
+            balloon.style.backgroundPosition = 'center';
+            
+            // Fallback in case image fails to load
+            balloon.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+            
             balloon.style.left = (5 + Math.random() * 85) + "%";
             const duration = 14 + Math.random() * 10;
             balloon.style.setProperty('--float-duration', duration + "s");
+            
             balloon.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (finalTriggered) return;
@@ -604,7 +643,7 @@
                 const rect = balloon.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
-                addBurst(centerX, centerY, randColor);
+                addBurst(centerX, centerY, 'rgba(255, 200, 150, 0.8)');
                 balloon.remove();
                 currentMsgIndex++;
                 if (currentMsgIndex === secretMessages.length && !finalTriggered) {

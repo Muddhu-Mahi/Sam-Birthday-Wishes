@@ -97,7 +97,6 @@
 
         /* Hover effect removed – no change on hover */
         .heart-gate:hover {
-            /* No hover transformation – keep pulse running */
             transform: perspective(800px) translateZ(0);
             filter: drop-shadow(0 15px 25px rgba(255, 150, 190, 0.35));
             animation: softZoomPulse 2s ease-in-out infinite;
@@ -119,13 +118,13 @@
             }
         }
 
-        /* Touch my heart text – styled exactly as in the image (romantic script) */
+        /* Touch my heart text – reduced size */
         .touch-heart {
             margin-top: 28px;
             font-family: 'Dancing Script', 'Times New Roman', Times, serif;
             font-style: italic;
             font-weight: 500;
-            font-size: clamp(1.6rem, 7vw, 2.8rem);
+            font-size: clamp(1.1rem, 4vw, 1.8rem);  /* decreased from 1.6rem/7vw/2.8rem */
             color: #ffb7c5;
             text-shadow: 0 0 8px rgba(255, 100, 150, 0.5);
             letter-spacing: 1px;
@@ -305,12 +304,12 @@
             opacity: 1;
         }
         .final-center-text {
-            font-size: clamp(1.6rem, 6vw, 3rem);
-            text-shadow: 0 0 30px #ffb347, 0 0 60px #ff4d6d;
-            padding: 1rem;
-            line-height: 1.4;
-            max-width: 85vw;
-        }
+    font-size: clamp(1.2rem, 5vw, 2.2rem);
+    text-shadow: 0 0 30px #ffb347, 0 0 60px #ff4d6d;
+    padding: 1rem;
+    line-height: 1.4;
+    max-width: 85vw;
+}
         .final-bottom-text {
             position: absolute;
             bottom: 12px;
@@ -370,7 +369,13 @@
         @media (max-width: 600px) {
             .balloon { width: 70px; height: 88px; }
             .balloon::after { height: 24px; bottom: -22px; }
-            .floating-message { padding: 1rem 1.8rem; font-size: clamp(1.45rem, 6.5vw, 2.3rem); }
+            /* Improve message boxes on mobile: wider, less tall */
+            .floating-message {
+                padding: 0.8rem 1.5rem;      /* reduced vertical, increased horizontal */
+                font-size: clamp(1.2rem, 5vw, 1.8rem); /* smaller text */
+                max-width: 92vw;              /* slightly wider */
+                border-radius: 24px;
+            }
             .final-center-text { font-size: clamp(1.4rem, 5vw, 2.2rem); }
             .final-bottom-text { font-size: 0.7rem; bottom: 8px; }
             .title-magic { white-space: nowrap; overflow-x: auto; max-width: 95vw; }
@@ -794,3 +799,5 @@
 </script>
 </body>
 </html>
+
+Made with 💖 by Mahi

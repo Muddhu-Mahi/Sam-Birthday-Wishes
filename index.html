@@ -236,31 +236,37 @@
             100% { transform: translateY(-150vh) rotate(3deg); opacity: 0.5; }
         }
 
+        /* ===== MESSAGE BOX — HORIZONTALLY WIDENED (DESKTOP & MOBILE) ===== */
         .floating-message {
             position: fixed;
             top: 45%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(20, 10, 25, 0.88);
-            backdrop-filter: blur(14px);
-            padding: 1.3rem 2.4rem;
-            border-radius: 28px;
+            background: rgba(20, 10, 25, 0.92);
+            backdrop-filter: blur(18px);
+            padding: 1.2rem 3rem;          /* Increased horizontal padding (from 2.4rem to 3rem) */
+            border-radius: 40px;
             font-family: 'Dancing Script', 'Times New Roman', Times, serif;
             font-style: italic;
             font-weight: 500;
             font-size: clamp(1.2rem, 5vw, 2.2rem);
             text-align: center;
-            color: rgb(255, 200, 210);
-            max-width: 86vw;
-            box-shadow: 0 0 45px rgba(255, 77, 109, 0.55), 0 0 18px rgba(255, 215, 150, 0.35);
+            color: rgb(255, 210, 220);
+            max-width: 92vw;                /* Wider max width on desktop (from 86vw) */
+            width: auto;
+            min-width: 280px;               /* Ensures comfortable width on narrow content */
+            box-shadow: 0 0 55px rgba(255, 77, 109, 0.65), 0 0 22px rgba(255, 215, 150, 0.45);
             letter-spacing: 1px;
             z-index: 200;
             opacity: 0;
             transition: opacity 1.2s cubic-bezier(0.2, 0.9, 0.4, 1), transform 1.2s cubic-bezier(0.2, 0.9, 0.4, 1);
             pointer-events: none;
-            line-height: 1.35;
-            text-shadow: 0 0 8px rgba(255, 100, 120, 0.85);
+            line-height: 1.4;
+            text-shadow: 0 0 10px rgba(255, 100, 120, 0.9);
             will-change: transform, opacity;
+            word-break: break-word;
+            white-space: normal;
+            box-sizing: border-box;
         }
         .floating-message.visible {
             opacity: 1;
@@ -366,22 +372,34 @@
             100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
         }
 
+        /* ===== MOBILE ADAPTATION — EVEN WIDER HORIZONTAL MESSAGE BOX ===== */
         @media (max-width: 600px) {
             .balloon { width: 70px; height: 88px; }
             .balloon::after { height: 24px; bottom: -22px; }
             
-            /* Mobile message boxes: wide & short */
+            /* Mobile message box: extra wide horizontally, larger side padding */
             .floating-message {
-                padding: 0.5rem 1.8rem;           /* minimal vertical, generous horizontal */
-                font-size: clamp(1rem, 4.5vw, 1.4rem);
-                max-width: 94vw;
-                border-radius: 28px;
-                line-height: 1.3;
+                padding: 0.9rem 2.5rem;         /* increased side padding for horizontal breath */
+                font-size: clamp(1rem, 4.5vw, 1.5rem);
+                max-width: 96vw;                 /* nearly full width on mobile */
+                min-width: 280px;
+                border-radius: 48px;
+                line-height: 1.35;
+                letter-spacing: 0.5px;
             }
             .final-center-text { font-size: clamp(1.2rem, 5vw, 2rem); }
             .final-bottom-text { font-size: 0.7rem; bottom: 8px; }
             .title-magic { white-space: nowrap; overflow-x: auto; max-width: 95vw; }
         }
+        
+        /* additional large desktop refinement: slightly wider but elegant */
+        @media (min-width: 1400px) {
+            .floating-message {
+                max-width: 800px;    /* cap at a generous width for very large screens */
+                padding: 1.4rem 3.5rem;
+            }
+        }
+        
         @media (prefers-reduced-motion: reduce) {
             *, .balloon, .heart-shower, .floating-message { animation: none !important; transition: none !important; }
             .balloon { display: none; }
@@ -463,9 +481,8 @@
             "Somewhere between your smile and attitude… people get lost 😏💖",
 
             "Only 3 more left...",
-            "3… ⏳",
-            "2… 💖",
-            "1… 😏",
+            "2… ⏳",
+            "1… 💖",
 
             "Happy Birthday once again… stay exactly the way you are… because that’s what makes you truly unforgettable 💖✨"
         ];

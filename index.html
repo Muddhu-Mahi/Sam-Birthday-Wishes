@@ -124,7 +124,7 @@
             font-family: 'Dancing Script', 'Times New Roman', Times, serif;
             font-style: italic;
             font-weight: 500;
-            font-size: clamp(1.1rem, 4vw, 1.8rem);  /* decreased from 1.6rem/7vw/2.8rem */
+            font-size: clamp(1.1rem, 4vw, 1.8rem);
             color: #ffb7c5;
             text-shadow: 0 0 8px rgba(255, 100, 150, 0.5);
             letter-spacing: 1px;
@@ -248,7 +248,7 @@
             font-family: 'Dancing Script', 'Times New Roman', Times, serif;
             font-style: italic;
             font-weight: 500;
-            font-size: clamp(1.6rem, 7vw, 2.8rem);
+            font-size: clamp(1.2rem, 5vw, 2.2rem);
             text-align: center;
             color: rgb(255, 200, 210);
             max-width: 86vw;
@@ -304,12 +304,12 @@
             opacity: 1;
         }
         .final-center-text {
-    font-size: clamp(1.2rem, 5vw, 2.2rem);
-    text-shadow: 0 0 30px #ffb347, 0 0 60px #ff4d6d;
-    padding: 1rem;
-    line-height: 1.4;
-    max-width: 85vw;
-}
+            font-size: clamp(1.2rem, 5vw, 2.2rem);
+            text-shadow: 0 0 30px #ffb347, 0 0 60px #ff4d6d;
+            padding: 1rem;
+            line-height: 1.4;
+            max-width: 85vw;
+        }
         .final-bottom-text {
             position: absolute;
             bottom: 12px;
@@ -369,14 +369,16 @@
         @media (max-width: 600px) {
             .balloon { width: 70px; height: 88px; }
             .balloon::after { height: 24px; bottom: -22px; }
-            /* Improve message boxes on mobile: wider, less tall */
+            
+            /* Mobile message boxes: wide & short */
             .floating-message {
-                padding: 0.8rem 1.5rem;      /* reduced vertical, increased horizontal */
-                font-size: clamp(1.2rem, 5vw, 1.8rem); /* smaller text */
-                max-width: 92vw;              /* slightly wider */
-                border-radius: 24px;
+                padding: 0.5rem 1.8rem;           /* minimal vertical, generous horizontal */
+                font-size: clamp(1rem, 4.5vw, 1.4rem);
+                max-width: 94vw;
+                border-radius: 28px;
+                line-height: 1.3;
             }
-            .final-center-text { font-size: clamp(1.4rem, 5vw, 2.2rem); }
+            .final-center-text { font-size: clamp(1.2rem, 5vw, 2rem); }
             .final-bottom-text { font-size: 0.7rem; bottom: 8px; }
             .title-magic { white-space: nowrap; overflow-x: auto; max-width: 95vw; }
         }
@@ -799,5 +801,3 @@
 </script>
 </body>
 </html>
-
-Made with 💖 by Mahi

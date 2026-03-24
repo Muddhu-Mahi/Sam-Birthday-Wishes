@@ -63,46 +63,77 @@
             opacity: 1;
         }
 
-        /* Heart – scales and gets a soft blur during zoom */
+        /* HEART – solid color, smooth 2-second zoom pulse */
         .heart-gate {
-            font-size: clamp(65px, 20vw, 80px);
+            font-size: clamp(80px, 24vw, 120px);
             cursor: pointer;
-            transition: transform 0.2s ease;
-            animation: celestialBeat 1.6s infinite ease-in-out;
             line-height: 1;
-            color: #ff4d6d;
-            will-change: transform, filter;
-        }
-        .heart-gate:active { transform: scale(0.92); }
-
-        @keyframes celestialBeat {
-            0%, 100% {
-                transform: scale(1);
-                filter: drop-shadow(0 0 6px rgba(255, 77, 109, 0.3)) blur(0px);
-            }
-            50% {
-                transform: scale(1.1);
-                filter: drop-shadow(0 0 12px rgba(255, 77, 109, 0.7)) blur(2px);
-            }
+            position: relative;
+            user-select: none;
+            touch-action: manipulation;
+            
+            color: #ff9ec3;
+            background: none;
+            
+            transform: perspective(800px) translateZ(0);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 15px 25px rgba(255, 150, 190, 0.35));
+            
+            animation: softZoomPulse 2s ease-in-out infinite;
         }
 
-        /* Invitation text – static glow only */
+        .heart-gate::before {
+            content: '❤️';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: inherit;
+            opacity: 0.18;
+            filter: blur(18px) brightness(1.2);
+            z-index: -1;
+            transition: all 0.6s ease;
+        }
+
+        /* Hover effect removed – no change on hover */
+        .heart-gate:hover {
+            /* No hover transformation – keep pulse running */
+            transform: perspective(800px) translateZ(0);
+            filter: drop-shadow(0 15px 25px rgba(255, 150, 190, 0.35));
+            animation: softZoomPulse 2s ease-in-out infinite;
+        }
+
+        /* Active effect kept – gentle press */
+        .heart-gate:active {
+            transform: scale(0.95);
+            transition: all 0.1s ease;
+            animation: none;
+        }
+
+        @keyframes softZoomPulse {
+            0%, 100% { 
+                transform: perspective(800px) translateZ(0) scale(1); 
+            }
+            50% { 
+                transform: perspective(800px) translateZ(0) scale(1.12); 
+            }
+        }
+
+        /* Touch my heart text – styled exactly as in the image (romantic script) */
         .touch-heart {
+            margin-top: 28px;
             font-family: 'Dancing Script', 'Times New Roman', Times, serif;
-            font-weight: 400;
             font-style: italic;
-            text-align: center;
-            font-size: clamp(1.4rem, 5vw, 2rem);
+            font-weight: 500;
+            font-size: clamp(1.6rem, 7vw, 2.8rem);
             color: #ffb7c5;
+            text-shadow: 0 0 8px rgba(255, 100, 150, 0.5);
             letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(255, 200, 180, 0.4);
-            margin-top: 1.5rem;
-            animation: softGlow 3s infinite alternate;
-        }
-
-        @keyframes softGlow {
-            0% { filter: drop-shadow(0 0 3px #ff758f); opacity: 0.8; }
-            100% { filter: drop-shadow(0 0 20px #ffb3c6); opacity: 1; }
+            background: none;
+            backdrop-filter: blur(4px);
+            padding: 8px 16px;
+            border-radius: 60px;
+            pointer-events: none;
         }
 
         /* main world */
@@ -120,14 +151,13 @@
             pointer-events: auto;
         }
 
-        /* ONLY the "Sam..." title moves up/down */
         .title-magic {
             font-family: 'Times New Roman', Times, serif;
             font-weight: 400;
             font-style: italic;
             text-align: center;
             padding-top: max(24px, 4vh);
-            font-size: clamp(3rem, 14vw, 5.6rem);
+            font-size: clamp(2.8rem, 14vw, 5.6rem);
             color: #ffb7c5;
             letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(255, 200, 180, 0.5), 0 0 20px rgba(255, 77, 109, 0.3);
@@ -141,22 +171,15 @@
             transition: opacity 0.8s ease;
             will-change: transform;
         }
-
         .title-magic.hide-title {
             opacity: 0;
             visibility: hidden;
         }
-
         @keyframes titleFloat {
-            0%, 100% {
-                transform: translateX(-50%) translateY(0);
-            }
-            50% {
-                transform: translateX(-50%) translateY(-10px);
-            }
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
         }
 
-        /* balloon container */
         .balloon-sky {
             position: absolute;
             inset: 0;
@@ -165,7 +188,6 @@
             z-index: 20;
         }
 
-        /* Balloon – now filled entirely with photo */
         .balloon {
             position: absolute;
             width: clamp(68px, 18vw, 105px);
@@ -210,21 +232,19 @@
             border-radius: 1px;
             pointer-events: none;
         }
-
         @keyframes floatUp {
             0% { transform: translateY(110vh) rotate(-2deg); opacity: 0.9; }
             100% { transform: translateY(-150vh) rotate(3deg); opacity: 0.5; }
         }
 
-        /* message pop style — smooth fade, extended duration for comfortable reading */
         .floating-message {
             position: fixed;
             top: 45%;
             left: 50%;
-            transform: translate(-50%, -45%);
-            background: rgba(20, 10, 25, 0.85);
-            backdrop-filter: blur(12px);
-            padding: 1.2rem 2.2rem;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(20, 10, 25, 0.88);
+            backdrop-filter: blur(14px);
+            padding: 1.3rem 2.4rem;
             border-radius: 28px;
             font-family: 'Dancing Script', 'Times New Roman', Times, serif;
             font-style: italic;
@@ -232,26 +252,22 @@
             font-size: clamp(1.6rem, 7vw, 2.8rem);
             text-align: center;
             color: rgb(255, 200, 210);
-            max-width: 85vw;
-            width: max-content;
-            box-shadow: 0 0 40px rgba(255, 77, 109, 0.5), 0 0 15px rgba(255, 215, 150, 0.3);
+            max-width: 86vw;
+            box-shadow: 0 0 45px rgba(255, 77, 109, 0.55), 0 0 18px rgba(255, 215, 150, 0.35);
             letter-spacing: 1px;
             z-index: 200;
             opacity: 0;
-            animation: smoothFade 5.6s ease forwards;
+            transition: opacity 1.2s cubic-bezier(0.2, 0.9, 0.4, 1), transform 1.2s cubic-bezier(0.2, 0.9, 0.4, 1);
             pointer-events: none;
-            line-height: 1.3;
-            text-shadow: 0 0 6px rgba(255, 100, 120, 0.8);
-            white-space: normal;
+            line-height: 1.35;
+            text-shadow: 0 0 8px rgba(255, 100, 120, 0.85);
+            will-change: transform, opacity;
         }
-        @keyframes smoothFade {
-            0% { opacity: 0; }
-            15% { opacity: 1; }
-            85% { opacity: 1; }
-            100% { opacity: 0; visibility: hidden; }
+        .floating-message.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
 
-        /* finale layers */
         #final-veil {
             position: fixed;
             inset: 0;
@@ -266,39 +282,51 @@
             opacity: 1;
         }
 
-        /* GRAND FINALE MESSAGE — absolutely static */
         .grand-message {
             position: fixed;
             inset: 0;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
             font-family: 'Playfair Display', 'Times New Roman', serif;
             font-weight: 500;
             font-style: italic;
-            font-size: clamp(1.4rem, 5vw, 2.8rem);
-            text-align: center;
-            padding: 2rem 1.5rem;
             background: #000000;
             color: #fff8ed;
-            text-shadow: 0 0 30px #ffb347, 0 0 60px #ff4d6d;
             z-index: 100;
             opacity: 0;
-            transition: opacity 4s ease 2.2s;
+            transition: opacity 5s ease 3s;
             pointer-events: none;
-            backdrop-filter: none;
-            border-radius: 0;
-            line-height: 1.5;
-            letter-spacing: 1px;
+            text-align: center;
             box-sizing: border-box;
-            overflow-y: auto;
-            transform: none !important;
-            animation: none !important;
-            will-change: auto;
         }
-        .grand-message.visible { opacity: 1; }
+        .grand-message.visible {
+            opacity: 1;
+        }
+        .final-center-text {
+            font-size: clamp(1.6rem, 6vw, 3rem);
+            text-shadow: 0 0 30px #ffb347, 0 0 60px #ff4d6d;
+            padding: 1rem;
+            line-height: 1.4;
+            max-width: 85vw;
+        }
+        .final-bottom-text {
+            position: absolute;
+            bottom: 12px;
+            width: 100%;
+            text-align: center;
+            font-size: clamp(0.7rem, 3vw, 0.9rem);
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            color: rgba(255, 245, 210, 0.65);
+            background: none;
+            padding: 6px 0;
+            text-shadow: 0 0 2px rgba(0,0,0,0.3);
+        }
 
-        /* canvas particles + effects */
         #particle-canvas {
             position: fixed;
             inset: 0;
@@ -321,7 +349,6 @@
             100% { transform: translateY(-130vh) rotate(360deg); opacity: 0; }
         }
 
-        /* glowing orbs for extra sparkle (reduced in finale) */
         .glow-orb {
             position: absolute;
             background: radial-gradient(circle, #ffdd99, #ffb347);
@@ -343,18 +370,15 @@
         @media (max-width: 600px) {
             .balloon { width: 70px; height: 88px; }
             .balloon::after { height: 24px; bottom: -22px; }
-            .floating-message { padding: 0.9rem 1.5rem; font-size: clamp(1.4rem, 6vw, 2.2rem); }
-            .grand-message {
-                font-size: clamp(1.2rem, 4.5vw, 2rem);
-                padding: 1.5rem 1rem;
-                line-height: 1.4;
-            }
+            .floating-message { padding: 1rem 1.8rem; font-size: clamp(1.45rem, 6.5vw, 2.3rem); }
+            .final-center-text { font-size: clamp(1.4rem, 5vw, 2.2rem); }
+            .final-bottom-text { font-size: 0.7rem; bottom: 8px; }
+            .title-magic { white-space: nowrap; overflow-x: auto; max-width: 95vw; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, .balloon, .heart-shower, .floating-message { animation: none !important; transition: none !important; }
             .balloon { display: none; }
         }
-        /* subtle guide */
         .hint-tap {
             position: fixed;
             bottom: 25px;
@@ -402,7 +426,6 @@
 
 <script>
     (function() {
-        // ==========  ROMANTIC MESSAGES ==========
         const secretMessages = [
             "🎂 Happy Birthday Sam… our family’s Lady Power Star 👑🔥",
             "Caring by heart 💖",
@@ -440,15 +463,9 @@
             "Happy Birthday once again… stay exactly the way you are… because that’s what makes you truly unforgettable 💖✨"
         ];
         
-       const ultimateMessage = `© 2026 Mahi <br> Made with Passion & Love 💖✨`;
-
-        // ==========  CUSTOM IMAGES FOR BALLOONS ==========
-        // Replace these URLs with your own image links (square or any shape)
-        // The images will cover the entire balloon surface.
         const balloonImages = [
             "https://ik.imagekit.io/njn8geuh0/IMG_20240411_174238.jpg"
         ];
-        // You can add more images – the script will randomly pick one for each balloon
 
         let currentMsgIndex = 0;
         let balloonInterval = null;
@@ -456,6 +473,7 @@
         let glowOrbInterval = null;
         let finalTriggered = false;
         let musicPlayer = null;
+        let firstTapOccurred = false;
         
         const introDiv = document.getElementById('introScreen');
         const dreamscape = document.getElementById('dreamscape');
@@ -465,17 +483,16 @@
         const titleElement = document.querySelector('.title-magic');
         const hintTap = document.querySelector('.hint-tap');
         
-        // Keep balloonColors for fallback in case an image fails to load
         const balloonColors = ['#FF9FBB', '#F6AE9A', '#D9B4FF', '#FFD966', '#F4ACB7', '#A7C7E7', '#FFB3BA', '#C3A5F0'];
         
-        // ---------- Starfield ----------
+        // Starfield
         const starCanvas = document.getElementById('stars-canvas');
         const starCtx = starCanvas.getContext('2d');
         let starsArray = [];
         function initStars() {
             starCanvas.width = window.innerWidth;
             starCanvas.height = window.innerHeight;
-            const starCount = 180;
+            const starCount = Math.min(180, Math.floor(window.innerWidth * window.innerHeight / 5000));
             for (let i = 0; i < starCount; i++) {
                 starsArray.push({
                     x: Math.random() * starCanvas.width,
@@ -510,7 +527,7 @@
             initStars();
         });
         
-        // ---------- Particle System (optimised) ----------
+        // Particles
         const particleCanvas = document.getElementById('particle-canvas');
         const pCtx = particleCanvas.getContext('2d');
         let particles = [];
@@ -522,7 +539,7 @@
         resizeParticleCanvas();
         
         function addBurst(x, y, baseColor) {
-            const particleCount = 16;
+            const particleCount = Math.min(16, window.innerWidth < 600 ? 12 : 16);
             for (let i = 0; i < particleCount; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = 2 + Math.random() * 10;
@@ -568,9 +585,8 @@
         }
         renderParticles();
         
-        // limit floating hearts
         let activeFloatingHearts = 0;
-        const MAX_FLOATING_HEARTS = 24;
+        const MAX_FLOATING_HEARTS = window.innerWidth < 600 ? 18 : 24;
         
         function spawnAmbientHeart() {
             if (finalTriggered) return;
@@ -589,9 +605,9 @@
             setTimeout(() => heartDiv.remove(), 7000);
         }
         
-        // glowing orbs (lighter)
         function spawnGlowOrb() {
             if (finalTriggered) return;
+            if (window.innerWidth < 600 && Math.random() > 0.6) return;
             const orb = document.createElement('div');
             orb.className = 'glow-orb';
             const size = Math.random() * 12 + 5;
@@ -604,15 +620,21 @@
             setTimeout(() => orb.remove(), 10000);
         }
         
-        function showPopupMessage(text) {
+        function showPopupMessage(text, durationMs = 4000) {
             const existingMsg = document.querySelector('.floating-message');
             if (existingMsg) existingMsg.remove();
             const msgDiv = document.createElement('div');
             msgDiv.className = 'floating-message';
             msgDiv.textContent = text;
             document.body.appendChild(msgDiv);
-            // Increase removal timeout to match the longer animation (5.6s)
-            setTimeout(() => { if(msgDiv.parentNode) msgDiv.remove(); }, 5600);
+            msgDiv.offsetHeight;
+            msgDiv.classList.add('visible');
+            setTimeout(() => {
+                msgDiv.classList.remove('visible');
+                setTimeout(() => {
+                    if (msgDiv.parentNode) msgDiv.remove();
+                }, 1300);
+            }, durationMs);
         }
         
         function spawnBalloon() {
@@ -620,26 +642,23 @@
             if (currentMsgIndex >= secretMessages.length) return;
             const balloon = document.createElement('div');
             balloon.className = 'balloon';
-            
-            // Randomly pick an image from the list
             const randomImage = balloonImages[Math.floor(Math.random() * balloonImages.length)];
-            // Set the image as background
             balloon.style.backgroundImage = `url('${randomImage}')`;
-            balloon.style.backgroundSize = 'cover';
-            balloon.style.backgroundPosition = 'center';
-            
-            // Fallback in case image fails to load
             balloon.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
-            
             balloon.style.left = (5 + Math.random() * 85) + "%";
             const duration = 14 + Math.random() * 10;
             balloon.style.setProperty('--float-duration', duration + "s");
-            
             balloon.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (finalTriggered) return;
+                if (!firstTapOccurred && hintTap && !hintTap.classList.contains('hide-hint')) {
+                    firstTapOccurred = true;
+                    hintTap.classList.add('hide-hint');
+                }
                 const msgToShow = secretMessages[currentMsgIndex];
-                showPopupMessage(msgToShow);
+                const isLastMessage = (currentMsgIndex === secretMessages.length - 1);
+                const displayDuration = isLastMessage ? 10000 : 4000;
+                showPopupMessage(msgToShow, displayDuration);
                 const rect = balloon.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
@@ -660,17 +679,18 @@
             if (balloonInterval) clearInterval(balloonInterval);
             if (heartRainInterval) clearInterval(heartRainInterval);
             if (glowOrbInterval) clearInterval(glowOrbInterval);
-            
             const allBalloons = document.querySelectorAll('.balloon');
             allBalloons.forEach(b => b.remove());
-            
             if (titleElement) titleElement.classList.add('hide-title');
             if (hintTap) hintTap.classList.add('hide-hint');
-            
             finalVeil.classList.add('active');
-            
-            // Reduced star rain
-            for (let i = 0; i < 80; i++) {
+            finalMsgDiv.innerHTML = `
+                <div class="final-center-text">🌹 Made with 💖 by Mahi 🌹</div>
+                <div class="final-bottom-text">© 2026 Mahi</div>
+            `;
+            finalMsgDiv.classList.add('visible');
+            const starRainCount = window.innerWidth < 600 ? 60 : 80;
+            for (let i = 0; i < starRainCount; i++) {
                 setTimeout(() => {
                     const starRain = document.createElement('span');
                     starRain.style.position = 'absolute';
@@ -690,10 +710,9 @@
             const styleSheet = document.createElement("style");
             styleSheet.textContent = `@keyframes fallDown { 0% { transform: translateY(0) rotate(0deg); opacity: 0.9; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }`;
             document.head.appendChild(styleSheet);
-            
-            // Fewer heart bursts
             setTimeout(() => {
-                for (let h = 0; h < 100; h++) {
+                const burstCount = window.innerWidth < 600 ? 80 : 100;
+                for (let h = 0; h < burstCount; h++) {
                     setTimeout(() => {
                         const heartBurst = document.createElement('div');
                         heartBurst.className = 'heart-shower';
@@ -707,31 +726,9 @@
                         setTimeout(() => heartBurst.remove(), 5000);
                     }, h * 20);
                 }
-                for (let g = 0; g < 30; g++) {
-                    addBurst(window.innerWidth/2 + (Math.random() - 0.5)*180, window.innerHeight/2 - 60, '#FFD966');
-                }
             }, 400);
-            
-            setTimeout(() => {
-                finalMsgDiv.innerHTML = ultimateMessage;
-                finalMsgDiv.classList.add('visible');
-                let encoreInterval = setInterval(() => {
-                    if (!finalMsgDiv.parentNode) clearInterval(encoreInterval);
-                    const extraHeart = document.createElement('div');
-                    extraHeart.className = 'heart-shower';
-                    extraHeart.innerHTML = ['❤️','💖','✨','💕'][Math.floor(Math.random()*4)];
-                    extraHeart.style.left = Math.random() * 100 + '%';
-                    extraHeart.style.bottom = '0px';
-                    extraHeart.style.fontSize = (14 + Math.random() * 20) + 'px';
-                    extraHeart.style.animationDuration = 6 + Math.random() * 6 + 's';
-                    document.body.appendChild(extraHeart);
-                    setTimeout(() => extraHeart.remove(), 8000);
-                }, 2500);
-                setTimeout(() => clearInterval(encoreInterval), 30000);
-            }, 2800);
         }
         
-        // Music
         function initMusicOnUserGesture() {
             return new Promise((resolve) => {
                 const existingPlayerDiv = document.getElementById('youtube-audio');

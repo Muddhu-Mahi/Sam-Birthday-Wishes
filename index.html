@@ -102,16 +102,27 @@
             }
         }
 
-        /* hide heart and text instantly on click */
-        .heart-gate.hide-heart,
-        .touch-heart.hide-text {
+        /* HEART – disappears INSTANTLY (no transition, no animation) */
+        .heart-gate.fade-out-heart {
+            animation: none;
+            transition: none;
             opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
-            transition: opacity 0.2s ease !important;
+            transform: scale(1);
+            filter: drop-shadow(0 0 0 rgba(255, 150, 190, 0));
+            pointer-events: none;
+            visibility: visible;
         }
 
-        /* Touch my heart text */
+        /* TEXT – graceful fade‑out like balloon messages */
+        .touch-heart.fade-out-text {
+            transition: opacity 1.2s cubic-bezier(0.2, 0.9, 0.4, 1),
+                        transform 1.2s cubic-bezier(0.2, 0.9, 0.4, 1);
+            opacity: 0 !important;
+            transform: scale(0.9);
+            pointer-events: none;
+            visibility: visible;
+        }
+
         .touch-heart {
             margin-top: 28px;
             font-family: 'Dancing Script', 'Times New Roman', Times, serif;
@@ -126,7 +137,6 @@
             padding: 8px 16px;
             border-radius: 60px;
             pointer-events: none;
-            transition: opacity 0.2s ease;
         }
 
         /* main world */
@@ -348,6 +358,56 @@
             100% { transform: translateY(-130vh) rotate(360deg); opacity: 0; }
         }
 
+        /* Celebration elements */
+        .celebration-element {
+            transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+        }
+        .celebration-element.fade-out {
+            opacity: 0 !important;
+        }
+
+        .finale-heart {
+            position: fixed;
+            bottom: -30px;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 95;
+            animation: riseAndTwinkle 4s ease-out forwards;
+            will-change: transform;
+            filter: drop-shadow(0 0 4px gold);
+        }
+        @keyframes riseAndTwinkle {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-120vh) rotate(360deg) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        .sparkle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, #ffdd88, #ffaa66);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 96;
+            animation: sparkleFall 1.8s linear forwards;
+        }
+        @keyframes sparkleFall {
+            0% {
+                transform: translateY(-10px) scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+        }
+
         .glow-orb {
             position: absolute;
             background: radial-gradient(circle, #ffdd99, #ffb347);
@@ -366,7 +426,6 @@
             100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
         }
 
-        /* heart burst particles (floating hearts on click) */
         .burst-heart {
             position: fixed;
             pointer-events: none;
@@ -386,6 +445,15 @@
             }
         }
 
+        .grand-message.pulse-glow {
+            animation: gentlePulse 2s infinite ease-in-out;
+        }
+        @keyframes gentlePulse {
+            0% { text-shadow: 0 0 10px #ffb347, 0 0 20px #ff4d6d; }
+            50% { text-shadow: 0 0 30px #ffb347, 0 0 50px #ff4d6d; }
+            100% { text-shadow: 0 0 10px #ffb347, 0 0 20px #ff4d6d; }
+        }
+
         @media (max-width: 600px) {
             .balloon { width: 70px; height: 88px; }
             .balloon::after { height: 24px; bottom: -22px; }
@@ -401,6 +469,7 @@
             .final-center-text { font-size: clamp(1.2rem, 5vw, 2rem); }
             .final-bottom-text { font-size: 0.7rem; bottom: 8px; }
             .title-magic { white-space: nowrap; overflow-x: auto; max-width: 95vw; }
+            .finale-heart { font-size: 1.4rem; }
         }
         
         @media (min-width: 1400px) {
@@ -506,9 +575,12 @@
         let heartRainInterval = null;
         let glowOrbInterval = null;
         let finalTriggered = false;
+        let waitingForFinale = false;
         let musicPlayer = null;
         let firstTapOccurred = false;
         let heartClicked = false;
+        
+        let celebrationTimeouts = [];
         
         const introDiv = document.getElementById('introScreen');
         const dreamscape = document.getElementById('dreamscape');
@@ -626,7 +698,7 @@
         const MAX_FLOATING_HEARTS = window.innerWidth < 600 ? 18 : 24;
         
         function spawnAmbientHeart() {
-            if (finalTriggered) return;
+            if (finalTriggered || waitingForFinale) return;
             if (activeFloatingHearts >= MAX_FLOATING_HEARTS) return;
             const heartDiv = document.createElement('div');
             heartDiv.className = 'heart-shower';
@@ -643,7 +715,7 @@
         }
         
         function spawnGlowOrb() {
-            if (finalTriggered) return;
+            if (finalTriggered || waitingForFinale) return;
             if (window.innerWidth < 600 && Math.random() > 0.6) return;
             const orb = document.createElement('div');
             orb.className = 'glow-orb';
@@ -674,7 +746,6 @@
             }, durationMs);
         }
         
-        // Heart burst effect (pure animation, no text)
         function spawnHeartBurst(centerX, centerY) {
             const burstCount = 28;
             for (let i = 0; i < burstCount; i++) {
@@ -695,25 +766,131 @@
             }
         }
         
-        // Heart click with instant hiding of heart and text
+        function removeAllBalloons() {
+            document.querySelectorAll('.balloon').forEach(b => b.remove());
+        }
+        
+        function fadeOutAndRemoveCelebrationElements() {
+            const elements = document.querySelectorAll('.finale-heart, .sparkle, .heart-shower, .star-rain');
+            elements.forEach(el => {
+                el.classList.add('celebration-element', 'fade-out');
+                setTimeout(() => {
+                    if (el.parentNode) el.remove();
+                }, 800);
+            });
+        }
+        
+        function startCelebrationEffects() {
+            // Hearts rising from bottom (unchanged)
+            for (let i = 0; i < 120; i++) {
+                const timeoutId = setTimeout(() => {
+                    const heartDiv = document.createElement('div');
+                    heartDiv.className = 'finale-heart celebration-element';
+                    const symbols = ['❤️', '💖', '💗', '💓', '💘', '💝', '✨', '⭐', '🌹'];
+                    heartDiv.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+                    heartDiv.style.left = Math.random() * 100 + '%';
+                    heartDiv.style.fontSize = (Math.random() * 28 + 20) + 'px';
+                    heartDiv.style.animationDuration = 3.5 + Math.random() * 1.5 + 's';
+                    heartDiv.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.body.appendChild(heartDiv);
+                    heartDiv.addEventListener('animationend', () => heartDiv.remove());
+                }, i * 45);
+                celebrationTimeouts.push(timeoutId);
+            }
+            
+            // Sparkle shower (unchanged)
+            for (let i = 0; i < 200; i++) {
+                const timeoutId = setTimeout(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'sparkle celebration-element';
+                    sparkle.style.left = Math.random() * 100 + '%';
+                    sparkle.style.top = Math.random() * 30 + '%';
+                    sparkle.style.width = (Math.random() * 6 + 2) + 'px';
+                    sparkle.style.height = sparkle.style.width;
+                    sparkle.style.animationDuration = 1.2 + Math.random() * 1 + 's';
+                    sparkle.style.animationDelay = Math.random() * 0.6 + 's';
+                    document.body.appendChild(sparkle);
+                    setTimeout(() => sparkle.remove(), 2500);
+                }, i * 35);
+                celebrationTimeouts.push(timeoutId);
+            }
+            
+            // Star rain (unchanged)
+            const starRainCount = window.innerWidth < 600 ? 60 : 80;
+            for (let i = 0; i < starRainCount; i++) {
+                const timeoutId = setTimeout(() => {
+                    const starRain = document.createElement('span');
+                    starRain.className = 'star-rain celebration-element';
+                    starRain.style.position = 'absolute';
+                    starRain.style.width = Math.random() * 6 + 2 + 'px';
+                    starRain.style.height = starRain.style.width;
+                    starRain.style.background = `radial-gradient(circle, #FFD966, #FF9FBB)`;
+                    starRain.style.borderRadius = '50%';
+                    starRain.style.left = Math.random() * 100 + '%';
+                    starRain.style.top = '-20px';
+                    starRain.style.boxShadow = '0 0 12px gold';
+                    starRain.style.pointerEvents = 'none';
+                    starRain.style.animation = `fallDown ${3 + Math.random() * 2.5}s linear forwards`;
+                    document.body.appendChild(starRain);
+                    setTimeout(() => starRain.remove(), 6000);
+                }, i * 25);
+                celebrationTimeouts.push(timeoutId);
+            }
+            
+            if (!document.querySelector('#fallDownStyle')) {
+                const styleSheet = document.createElement("style");
+                styleSheet.id = 'fallDownStyle';
+                styleSheet.textContent = `@keyframes fallDown { 0% { transform: translateY(0) rotate(0deg); opacity: 0.9; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }`;
+                document.head.appendChild(styleSheet);
+            }
+            
+            // CENTRAL HEART BURST — REDUCED COUNT & SHORTER DURATION
+            const finalBurstTimeout = setTimeout(() => {
+                // Reduced from 70-90 to 35-45 hearts
+                const burstCount = window.innerWidth < 600 ? 35 : 45;
+                for (let h = 0; h < burstCount; h++) {
+                    const innerTimeout = setTimeout(() => {
+                        const heartBurst = document.createElement('div');
+                        heartBurst.className = 'heart-shower celebration-element';
+                        heartBurst.innerHTML = '❤️';
+                        heartBurst.style.left = window.innerWidth/2 + (Math.random() - 0.5) * 200 + 'px';
+                        heartBurst.style.top = window.innerHeight/2 - 50 + 'px';
+                        heartBurst.style.fontSize = (12 + Math.random() * 18) + 'px';
+                        // Shorter animation: from 4s down to 2.5s
+                        heartBurst.style.animation = `floatHeartSoft 2.5s linear forwards`;
+                        heartBurst.style.opacity = '0.9';
+                        document.body.appendChild(heartBurst);
+                        setTimeout(() => heartBurst.remove(), 3000);
+                    }, h * 12);
+                    celebrationTimeouts.push(innerTimeout);
+                }
+            }, 300);
+            celebrationTimeouts.push(finalBurstTimeout);
+        }
+        
+        function showFinalCredit() {
+            fadeOutAndRemoveCelebrationElements();
+            finalMsgDiv.innerHTML = `
+                <div class="final-center-text">🌹 Made with 💖 by Mahi 🌹</div>
+                <div class="final-bottom-text">© 2026 Mahi</div>
+            `;
+            finalMsgDiv.classList.add('visible');
+            finalMsgDiv.classList.add('pulse-glow');
+        }
+        
         async function handleHeartTouch(e) {
             if (heartClicked) return;
             heartClicked = true;
             
-            // Hide heart and text immediately (magical vanish)
-            heartElement.classList.add('hide-heart');
-            if (touchText) touchText.classList.add('hide-text');
+            heartElement.classList.add('fade-out-heart');
+            if (touchText) touchText.classList.add('fade-out-text');
             
-            // Get position for burst
             const rect = heartElement.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
-            
-            // Create a magical burst of hearts and sparkles
             spawnHeartBurst(centerX, centerY);
             addBurst(centerX, centerY, '#ff99cc');
             
-            // Soft camera flash effect
             const flash = document.createElement('div');
             flash.style.position = 'fixed';
             flash.style.inset = '0';
@@ -725,26 +902,22 @@
             document.body.appendChild(flash);
             setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 500); }, 100);
             
-            // Start music and transition after a short moment
             setTimeout(async () => {
-                try {
-                    await initMusicOnUserGesture();
-                } catch(err) { console.log("music non-blocking"); }
-                
+                try { await initMusicOnUserGesture(); } catch(err) {}
                 introDiv.style.opacity = '0';
                 setTimeout(() => {
                     introDiv.style.display = 'none';
                     dreamscape.classList.add('reveal');
-                    balloonInterval = setInterval(() => { if (!finalTriggered) spawnBalloon(); }, 2200);
-                    heartRainInterval = setInterval(() => { if (!finalTriggered) spawnAmbientHeart(); }, 2200);
-                    glowOrbInterval = setInterval(() => { if (!finalTriggered) spawnGlowOrb(); }, 2000);
+                    balloonInterval = setInterval(() => { if (!finalTriggered && !waitingForFinale) spawnBalloon(); }, 2200);
+                    heartRainInterval = setInterval(() => { if (!finalTriggered && !waitingForFinale) spawnAmbientHeart(); }, 2200);
+                    glowOrbInterval = setInterval(() => { if (!finalTriggered && !waitingForFinale) spawnGlowOrb(); }, 2000);
                     for (let i = 0; i < 3; i++) setTimeout(() => spawnBalloon(), i * 500);
                 }, 1500);
             }, 600);
         }
         
         function spawnBalloon() {
-            if (finalTriggered) return;
+            if (finalTriggered || waitingForFinale) return;
             if (currentMsgIndex >= secretMessages.length) return;
             const balloon = document.createElement('div');
             balloon.className = 'balloon';
@@ -756,83 +929,55 @@
             balloon.style.setProperty('--float-duration', duration + "s");
             balloon.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (finalTriggered) return;
+                if (finalTriggered || waitingForFinale) return;
                 if (!firstTapOccurred && hintTap && !hintTap.classList.contains('hide-hint')) {
                     firstTapOccurred = true;
                     hintTap.classList.add('hide-hint');
                 }
+                
+                const isLast = (currentMsgIndex === secretMessages.length - 1);
                 const msgToShow = secretMessages[currentMsgIndex];
-                const isLastMessage = (currentMsgIndex === secretMessages.length - 1);
-                const displayDuration = isLastMessage ? 10000 : 4000;
+                const displayDuration = isLast ? 8000 : 4000;
                 showPopupMessage(msgToShow, displayDuration);
+                
                 const rect = balloon.getBoundingClientRect();
                 const centerX = rect.left + rect.width / 2;
                 const centerY = rect.top + rect.height / 2;
                 addBurst(centerX, centerY, 'rgba(255, 200, 150, 0.8)');
                 balloon.remove();
                 currentMsgIndex++;
-                if (currentMsgIndex === secretMessages.length && !finalTriggered) {
-                    triggerGrandFinale();
+                
+                if (isLast && !finalTriggered && !waitingForFinale) {
+                    waitingForFinale = true;
+                    if (balloonInterval) clearInterval(balloonInterval);
+                    if (heartRainInterval) clearInterval(heartRainInterval);
+                    if (glowOrbInterval) clearInterval(glowOrbInterval);
+                    removeAllBalloons();
+                    if (titleElement) titleElement.classList.add('hide-title');
+                    if (hintTap) hintTap.classList.add('hide-hint');
+                    
+                    startCelebrationEffects();
+                    
+                    // Cleanup celebration effects before message fades out
+                    const cleanupDelay = displayDuration - 800;
+                    const cleanupTimeout = setTimeout(() => {
+                        fadeOutAndRemoveCelebrationElements();
+                    }, Math.max(0, cleanupDelay));
+                    celebrationTimeouts.push(cleanupTimeout);
+                    
+                    const finaleDelay = displayDuration + 1400;
+                    const finaleTimeout = setTimeout(() => {
+                        if (!finalTriggered) {
+                            finalTriggered = true;
+                            finalVeil.classList.add('active');
+                            showFinalCredit();
+                        }
+                    }, finaleDelay);
+                    celebrationTimeouts.push(finaleTimeout);
                 }
             });
             balloonContainer.appendChild(balloon);
             setTimeout(() => { if (balloon.parentNode) balloon.remove(); }, duration * 1000 + 800);
-        }
-        
-        function triggerGrandFinale() {
-            if (finalTriggered) return;
-            finalTriggered = true;
-            if (balloonInterval) clearInterval(balloonInterval);
-            if (heartRainInterval) clearInterval(heartRainInterval);
-            if (glowOrbInterval) clearInterval(glowOrbInterval);
-            const allBalloons = document.querySelectorAll('.balloon');
-            allBalloons.forEach(b => b.remove());
-            if (titleElement) titleElement.classList.add('hide-title');
-            if (hintTap) hintTap.classList.add('hide-hint');
-            finalVeil.classList.add('active');
-            finalMsgDiv.innerHTML = `
-                <div class="final-center-text">🌹 Made with 💖 by Mahi 🌹</div>
-                <div class="final-bottom-text">© 2026 Mahi</div>
-            `;
-            finalMsgDiv.classList.add('visible');
-            const starRainCount = window.innerWidth < 600 ? 60 : 80;
-            for (let i = 0; i < starRainCount; i++) {
-                setTimeout(() => {
-                    const starRain = document.createElement('span');
-                    starRain.style.position = 'absolute';
-                    starRain.style.width = Math.random() * 6 + 2 + 'px';
-                    starRain.style.height = starRain.style.width;
-                    starRain.style.background = `radial-gradient(circle, #FFD966, #FF9FBB)`;
-                    starRain.style.borderRadius = '50%';
-                    starRain.style.left = Math.random() * 100 + '%';
-                    starRain.style.top = '-20px';
-                    starRain.style.boxShadow = '0 0 12px gold';
-                    starRain.style.pointerEvents = 'none';
-                    starRain.style.animation = `fallDown ${4 + Math.random() * 7}s linear forwards`;
-                    document.body.appendChild(starRain);
-                    setTimeout(() => starRain.remove(), 10000);
-                }, i * 30);
-            }
-            const styleSheet = document.createElement("style");
-            styleSheet.textContent = `@keyframes fallDown { 0% { transform: translateY(0) rotate(0deg); opacity: 0.9; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }`;
-            document.head.appendChild(styleSheet);
-            setTimeout(() => {
-                const burstCount = window.innerWidth < 600 ? 80 : 100;
-                for (let h = 0; h < burstCount; h++) {
-                    setTimeout(() => {
-                        const heartBurst = document.createElement('div');
-                        heartBurst.className = 'heart-shower';
-                        heartBurst.innerHTML = '❤️';
-                        heartBurst.style.left = window.innerWidth/2 + (Math.random() - 0.5) * 280 + 'px';
-                        heartBurst.style.top = window.innerHeight/2 - 50 + 'px';
-                        heartBurst.style.fontSize = (16 + Math.random() * 24) + 'px';
-                        heartBurst.style.animation = `floatHeartSoft 5s linear forwards`;
-                        heartBurst.style.opacity = '0.9';
-                        document.body.appendChild(heartBurst);
-                        setTimeout(() => heartBurst.remove(), 5000);
-                    }, h * 20);
-                }
-            }, 400);
         }
         
         function initMusicOnUserGesture() {
@@ -851,36 +996,23 @@
                     musicPlayer = new YT.Player('youtube-audio', {
                         videoId: 'BSJa1UytM8w',
                         playerVars: { autoplay: 1, controls: 0, loop: 1, modestbranding: 1, rel: 0, playlist: 'BSJa1UytM8w' },
-                        events: {
-                            onReady: (event) => {
-                                event.target.playVideo();
-                                event.target.setVolume(55);
-                                resolve();
-                            }
-                        }
+                        events: { onReady: (event) => { event.target.playVideo(); event.target.setVolume(55); resolve(); } }
                     });
                 };
-                if (window.YT && window.YT.Player) {
-                    window.onYouTubeIframeAPIReady();
-                }
+                if (window.YT && window.YT.Player) window.onYouTubeIframeAPIReady();
             });
         }
         
-        // Attach heart click with instant hide of heart and text
         heartElement.addEventListener('click', handleHeartTouch);
-        
         initStars();
         resizeParticleCanvas();
-        
-        document.body.addEventListener('touchmove', (e) => {
-            if (e.target.closest('.balloon')) return;
-        }, { passive: false });
-        
+        document.body.addEventListener('touchmove', (e) => { if (e.target.closest('.balloon')) return; }, { passive: false });
         window.addEventListener('beforeunload', () => {
             if (balloonInterval) clearInterval(balloonInterval);
             if (heartRainInterval) clearInterval(heartRainInterval);
             if (glowOrbInterval) clearInterval(glowOrbInterval);
             if (starAnimationFrame) cancelAnimationFrame(starAnimationFrame);
+            celebrationTimeouts.forEach(t => clearTimeout(t));
         });
     })();
 </script>

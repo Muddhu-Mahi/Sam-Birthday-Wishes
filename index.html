@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <style>
+        /* All your original CSS remains exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -214,7 +215,6 @@
             0% { transform: translateY(110vh) rotate(-2deg); opacity: 0.9; }
             100% { transform: translateY(-150vh) rotate(3deg); opacity: 0.5; }
         }
-        /* universal smooth fade-out class for all decorative symbols */
         .symbol-fade-out {
             animation: none !important;
             transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1) !important;
@@ -256,7 +256,6 @@
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
         }
-        /* smooth fade-out for message box */
         .floating-message.fade-message-out {
             transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.9s cubic-bezier(0.2, 0.9, 0.4, 1) !important;
             opacity: 0 !important;
@@ -336,7 +335,6 @@
             will-change: transform;
             transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        /* NEW FALLING ANIMATION FOR FINALE HEARTS - TOP TO BOTTOM */
         @keyframes heartFallDown {
             0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
             100% { transform: translateY(130vh) rotate(360deg); opacity: 0; }
@@ -345,14 +343,12 @@
             0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
             100% { transform: translateY(-130vh) rotate(360deg); opacity: 0; }
         }
-        /* NEW FALLING ANIMATION FOR GRACEFUL SYMBOLS (TEXT/EMOJI) - TOP TO BOTTOM */
         @keyframes fallDownGraceful {
             0% { transform: translateY(0) translateX(0) rotate(0deg) scale(0.5); opacity: 0.9; }
             25% { opacity: 1; }
             75% { opacity: 0.8; }
             100% { transform: translateY(130vh) translateX(var(--drift, 50px)) rotate(420deg) scale(0.2); opacity: 0; }
         }
-        /* sparkle already uses top->bottom, keep as is */
         .sparkle {
             position: fixed;
             width: 4px;
@@ -443,7 +439,6 @@
             filter: drop-shadow(0 0 8px rgba(255, 200, 150, 0.6));
             transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        /* class for falling particles in finale (top to bottom) */
         .falling-particle {
             animation: fallDownGraceful 6.5s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
         }
@@ -521,36 +516,47 @@
 <script>
     (function() {
         const secretMessages = [
-            "🎂 Happy Birthday Sam… our family’s Lady Power Star 👑🔥",
-            "Caring by heart 💖",
-            "Understanding without words 🤍",
-            "Kind-hearted… but stronger than you show 💖⚡",
-            "Modern in style, traditional in values 🌸✨",
-            "Your smile? Pure magic 😊✨",
-            "Your laugh? Better than any playlist 🎶😌",
-            "When you smile… even stars feel jealous ✨😌",
-            "You make confidence look beautiful 😌💖",
-            "Your attitude… confidently unstoppable 😏🔥",
-            "You talk straight, no filters… and that’s your power 💯",
-            "Strong mind… soft heart… rare combination 💖⚡",
-            "There’s a charm in you that words can’t fully explain 💭💫",
-            "You don’t try to stand out… it just happens 😌🔥",
-            "You don’t chase attention… it finds you 👀🔥",
-            "Simple… yet impossible to ignore 😏✨",
-            "Confidence like yours? Rare… and a little dangerous 😏⚡",
-            "Effortless charm… still stealing attention 😌👑",
-            "You’re not just beautiful… you’re a whole vibe 💖",
-            "Only a few balloons left… are you ready for the grand finale? 😌✨",
-            "Wherever you go… vibes try to catch up 👀🔥",
-            "When you walk in… time slows down, just to notice you ⏳😌",
-            "You don’t need lights… you already glow 💫🔥",
-            "You don’t follow trends… you create your own vibe 💫🔥",
-            "Somewhere between your smile and attitude… people get lost 😏💖",
-            "Only 3 more left...",
-            "2… ⏳",
-            "1… 💖",
-            "Happy Birthday once again… stay exactly the way you are… because that’s what makes you truly unforgettable 💖✨"
-        ];
+    'Happy Birthday, Lady Power Star… you don’t just walk into rooms—you make them yours. 👑🔥',
+    'Inside you’re pure gold, outside you’re pure fire… and somehow that’s still an understatement. 😏💖',
+    'You understand my soul without me saying a word… that’s the kind of beauty that ruins me. 🤍✨',
+    'The way you care for animals? That’s the exact moment my heart stopped being mine. 🐾💖',
+    'Modern style, traditional soul… you’re the kind of paradox I’d get lost in forever. 😌🌸',
+    'That smile doesn’t just light up rooms—it rewires my whole mood in a second. 😏✨',
+    'Your laugh is my favorite addiction… one replay and I’m hooked all over again. 🎶💖',
+    'Confidence isn’t your accessory—it’s your weapon, and you wield it perfectly. 😌⚡',
+    'I love how you speak your mind… no games, no filters—just pure, irresistible realness. 😏🔥',
+    'Even your “angry” face is dangerously pretty… are you trying to make me fall harder? 😌💖',
+    'Beauty with brilliance—you’re basically a dream that also happens to have a brain. 😌🔥',
+    'You’re not short… you’re “concentrated” power—all attitude, all charm, zero waste. 😏⚡',
+    'You don’t walk—you arrive. Every step says, “watch me.” 😌✨',
+    'Soft heart, sharp mind… you’re the kind of beautiful mystery I’d risk everything to solve. 😏💖',
+    'You’re the only person who can be savage and sweet in the same breath… and I’m obsessed with both. 😌🔥',
+    'Your presence is a vibe, but your soul is the destination—and I’m already booking a one-way trip. 😌✨',
+    'I see the care you try to hide… and honestly? It’s the most attractive thing about you. 🤍😏',
+    'You’re the perfect mix of “don’t mess with me” and “come here”—and I never know whether to salute or melt. 😌💖',
+    'Real beauty doesn’t shout—it glows. And you’re basically radiant 24/7. ✨🔥',
+    'Your honesty is refreshing; your charm is addictive. I should probably warn you—I’m already hooked. 😏⚡',
+    'You’re not a trend—you’re a classic with a modern edge. Timeless, but dangerously current. 😌🌸',
+    'One look from you and my brain buffers. It’s like you have a direct line to my distraction. 😏💖',
+    'Small in height, but your presence makes everyone else feel like they’re in the background. 😌🔥',
+    'You’re not “once in a lifetime”—you’re the kind of energy people spend their whole life searching for. 😌⚡',
+    'I love your attitude—it’s the kind that says, “I know my worth, and you should too.” 😏💖',
+    'You don’t need filters—your soul came in high-definition. The rest of us are just living in standard quality. 😌✨',
+    'Your eyes tell a story I’d gladly stay up all night reading. Chapter one? Hook me. 😏🔥',
+    'You look simple to some, impossible to figure out to others. To me? Just irresistible. 😌💖',
+    'That “I don’t care” look? I see right through it—and it only makes me care more. 😏⚡',
+    'You’re the queen of your own world—just tell me when I can immigrate. 👑💖',
+    'Strong enough to lead, soft enough to love… you’re the kind of balance I didn’t know I needed. 😌✨',
+    'You don’t follow the crowd—you are the destination. Everyone else is just directions. 😏🔥',
+    'Your smile is a weapon of mass attraction. Use it responsibly… or don’t. I’m not complaining. 😌💖',
+    'Beautiful, brilliant, and slightly bold—you’re the triple threat I never saw coming. 😏⚡',
+    'Happy Birthday to the girl who proves “beauty with a brain” is just the beginning. 🎂🔥',
+    'That attitude? It’s not a phase—it’s a lifestyle. And honestly, it looks incredible on you. 😏✨',
+    'You care so much that your silence speaks louder than most people’s words. That’s rare. That’s you. 😌💖',
+    'You’re the original Lady Power Star—no sequels, no comparisons. Just one of a kind. 👑⚡',
+    'I like your vibe—calm, cool, and just the right amount of “I could ruin your life.” Spicy indeed. 😏🔥',
+    'Birthday girl today, but my favorite person every single day. Don’t let the title fool you—you’ve owned that spot. 😌💖'
+];
         
         const balloonImages = ["https://ik.imagekit.io/njn8geuh0/IMG_20240411_174238.jpg"];
         let currentMsgIndex = 0;
@@ -675,7 +681,7 @@
         }
         renderParticles();
 
-        // ambient generators (cleared before finale)
+        // ambient generators
         let activeFloatingHearts = 0;
         const MAX_FLOATING_HEARTS = window.innerWidth < 600 ? 18 : 24;
         function spawnAmbientHeart() {
@@ -728,7 +734,6 @@
             }
         }
 
-        // ---------- FADE LOGIC ----------
         function fadeOutAllSymbolsImmediately(callback) {
             const selectors = ['.balloon', '.heart-shower', '.sparkle', '.glow-orb', '.star-rain', '.final-floating-particle', '.heart-ripple', '.burst-heart', '.falling-particle', '.falling-heart'];
             const elements = document.querySelectorAll(selectors.join(','));
@@ -786,7 +791,6 @@
             }
         }
 
-        // Romantic finale - ALL NEW SYMBOLS NOW FALL FROM TOP TO BOTTOM
         function startRomanticFinale() {
             romanticVeil.classList.add('active');
             const symbolsPool = [
@@ -799,10 +803,10 @@
             for (let i = 0; i < particleCount; i++) {
                 setTimeout(() => {
                     const p = document.createElement('div');
-                    p.className = 'final-floating-particle falling-particle'; // using falling animation (top to bottom)
+                    p.className = 'final-floating-particle falling-particle';
                     p.innerHTML = symbolsPool[Math.floor(Math.random() * symbolsPool.length)];
                     p.style.left = (10 + Math.random() * 80) + '%';
-                    p.style.top = '-30px'; // start above viewport
+                    p.style.top = '-30px';
                     p.style.fontSize = (Math.random() * 30 + 18) + 'px';
                     p.style.setProperty('--drift', (Math.random() - 0.5) * 140 + 'px');
                     p.style.animationDuration = (6 + Math.random() * 6) + 's';
@@ -810,7 +814,6 @@
                     p.addEventListener('animationend', () => p.remove());
                 }, i * 42);
             }
-            // sparkles already fall top->bottom, keep same
             for (let i = 0; i < 120; i++) {
                 setTimeout(() => {
                     const s = document.createElement('div');
@@ -825,13 +828,12 @@
                     setTimeout(() => s.remove(), 4500);
                 }, i * 48);
             }
-            // HEARTS NOW FALL FROM TOP (instead of rising)
             for (let i = 0; i < 42; i++) {
                 setTimeout(() => {
                     const h = document.createElement('div');
-                    h.className = 'heart-shower falling-heart'; // use falling-heart class with new animation
+                    h.className = 'heart-shower falling-heart';
                     h.style.left = (20 + Math.random() * 60) + '%';
-                    h.style.top = '-40px'; // start from above
+                    h.style.top = '-40px';
                     h.style.fontSize = (28 + Math.random() * 32) + 'px';
                     h.style.animationDuration = (8 + Math.random() * 6) + 's';
                     document.body.appendChild(h);
@@ -856,7 +858,6 @@
             finalMsgDiv.classList.add('visible', 'pulse-glow');
         }
 
-        // ---------- BALLOON SPAWNING ----------
         function spawnBalloon() {
             if (finalTriggered || waitingForFinale) return;
             if (currentMsgIndex >= secretMessages.length) return;
@@ -887,12 +888,9 @@
                     if (titleElement) titleElement.classList.add('hide-title');
                     if (hintTap) hintTap.classList.add('hide-hint');
 
-                    // 1) Start romantic finale with falling symbols (top to bottom)
                     startRomanticFinale();
                     
-                    // 2) Fade out all existing symbols (old balloons, hearts, etc.)
                     fadeOutAllSymbolsImmediately(() => {
-                        // 3) After 5 seconds, fade out final message box then black veil + credit
                         setTimeout(() => {
                             fadeOutLastMessage(() => {
                                 finalTriggered = true;
@@ -909,7 +907,6 @@
             setTimeout(() => { if (balloon.parentNode) balloon.remove(); }, duration * 1000 + 800);
         }
 
-        // ---------- MUSIC & ENTRY ----------
         async function handleHeartTouch(e) {
             if (heartClicked) return;
             heartClicked = true;
@@ -939,9 +936,9 @@
                         playerDiv.style.display = 'none';
                         document.body.appendChild(playerDiv);
                         musicPlayer = new YT.Player('youtube-audio', {
-                            videoId: 'BSJa1UytM8w',
-                            playerVars: { autoplay: 1, controls: 0, loop: 1, modestbranding: 1, rel: 0, playlist: 'BSJa1UytM8w' },
-                            events: { onReady: (event) => { event.target.playVideo(); event.target.setVolume(55); } }
+                            videoId: 'iuNCZqnZFiY',   // ←←← CHANGED SONG HERE
+                            playerVars: { autoplay: 1, controls: 0, loop: 1, modestbranding: 1, rel: 0, playlist: 'iuNCZqnZFiY' },
+                            events: { onReady: (event) => { event.target.playVideo(); event.target.setVolume(40); } }
                         });
                     };
                     if (window.YT && window.YT.Player) window.onYouTubeIframeAPIReady();
@@ -970,3 +967,5 @@
 </script>
 </body>
 </html>
+
+musicPlayer

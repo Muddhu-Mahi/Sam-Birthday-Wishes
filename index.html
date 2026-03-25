@@ -336,16 +336,23 @@
             will-change: transform;
             transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
+        /* NEW FALLING ANIMATION FOR FINALE HEARTS - TOP TO BOTTOM */
+        @keyframes heartFallDown {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+            100% { transform: translateY(130vh) rotate(360deg); opacity: 0; }
+        }
         @keyframes floatHeartSoft {
             0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
             100% { transform: translateY(-130vh) rotate(360deg); opacity: 0; }
         }
-        .celebration-element {
-            transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+        /* NEW FALLING ANIMATION FOR GRACEFUL SYMBOLS (TEXT/EMOJI) - TOP TO BOTTOM */
+        @keyframes fallDownGraceful {
+            0% { transform: translateY(0) translateX(0) rotate(0deg) scale(0.5); opacity: 0.9; }
+            25% { opacity: 1; }
+            75% { opacity: 0.8; }
+            100% { transform: translateY(130vh) translateX(var(--drift, 50px)) rotate(420deg) scale(0.2); opacity: 0; }
         }
-        .celebration-element.fade-out {
-            opacity: 0 !important;
-        }
+        /* sparkle already uses top->bottom, keep as is */
         .sparkle {
             position: fixed;
             width: 4px;
@@ -434,14 +441,14 @@
             z-index: 95;
             will-change: transform, opacity;
             filter: drop-shadow(0 0 8px rgba(255, 200, 150, 0.6));
-            animation: floatGraceful 6.5s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
             transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        @keyframes floatGraceful {
-            0% { transform: translateY(0) translateX(0) rotate(0deg) scale(0.5); opacity: 0.9; }
-            25% { opacity: 1; }
-            75% { opacity: 0.8; }
-            100% { transform: translateY(-140vh) translateX(var(--drift, 50px)) rotate(420deg) scale(0.2); opacity: 0; }
+        /* class for falling particles in finale (top to bottom) */
+        .falling-particle {
+            animation: fallDownGraceful 6.5s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
+        }
+        .falling-heart {
+            animation: heartFallDown 8s linear forwards;
         }
         .heart-ripple {
             position: fixed;
@@ -668,7 +675,7 @@
         }
         renderParticles();
 
-        // ambient generators
+        // ambient generators (cleared before finale)
         let activeFloatingHearts = 0;
         const MAX_FLOATING_HEARTS = window.innerWidth < 600 ? 18 : 24;
         function spawnAmbientHeart() {
@@ -723,7 +730,7 @@
 
         // ---------- FADE LOGIC ----------
         function fadeOutAllSymbolsImmediately(callback) {
-            const selectors = ['.balloon', '.heart-shower', '.sparkle', '.glow-orb', '.star-rain', '.final-floating-particle', '.heart-ripple', '.burst-heart'];
+            const selectors = ['.balloon', '.heart-shower', '.sparkle', '.glow-orb', '.star-rain', '.final-floating-particle', '.heart-ripple', '.burst-heart', '.falling-particle', '.falling-heart'];
             const elements = document.querySelectorAll(selectors.join(','));
             if (elements.length === 0) { if(callback) callback(); return; }
             let removedCount = 0;
@@ -740,7 +747,6 @@
                     }
                 };
                 el.addEventListener('transitionend', onTransitionEnd);
-                // fallback
                 setTimeout(() => {
                     if (el.parentNode) el.remove();
                     onFinish();
@@ -780,7 +786,7 @@
             }
         }
 
-        // Romantic finale – now called immediately on last balloon click
+        // Romantic finale - ALL NEW SYMBOLS NOW FALL FROM TOP TO BOTTOM
         function startRomanticFinale() {
             romanticVeil.classList.add('active');
             const symbolsPool = [
@@ -793,9 +799,10 @@
             for (let i = 0; i < particleCount; i++) {
                 setTimeout(() => {
                     const p = document.createElement('div');
-                    p.className = 'final-floating-particle celebration-element';
+                    p.className = 'final-floating-particle falling-particle'; // using falling animation (top to bottom)
                     p.innerHTML = symbolsPool[Math.floor(Math.random() * symbolsPool.length)];
                     p.style.left = (10 + Math.random() * 80) + '%';
+                    p.style.top = '-30px'; // start above viewport
                     p.style.fontSize = (Math.random() * 30 + 18) + 'px';
                     p.style.setProperty('--drift', (Math.random() - 0.5) * 140 + 'px');
                     p.style.animationDuration = (6 + Math.random() * 6) + 's';
@@ -803,6 +810,7 @@
                     p.addEventListener('animationend', () => p.remove());
                 }, i * 42);
             }
+            // sparkles already fall top->bottom, keep same
             for (let i = 0; i < 120; i++) {
                 setTimeout(() => {
                     const s = document.createElement('div');
@@ -817,16 +825,17 @@
                     setTimeout(() => s.remove(), 4500);
                 }, i * 48);
             }
+            // HEARTS NOW FALL FROM TOP (instead of rising)
             for (let i = 0; i < 42; i++) {
                 setTimeout(() => {
                     const h = document.createElement('div');
-                    h.className = 'heart-shower celebration-element';
+                    h.className = 'heart-shower falling-heart'; // use falling-heart class with new animation
                     h.style.left = (20 + Math.random() * 60) + '%';
-                    h.style.bottom = '-40px';
+                    h.style.top = '-40px'; // start from above
                     h.style.fontSize = (28 + Math.random() * 32) + 'px';
-                    h.style.animationDuration = (9 + Math.random() * 9) + 's';
+                    h.style.animationDuration = (8 + Math.random() * 6) + 's';
                     document.body.appendChild(h);
-                    setTimeout(() => h.remove(), 20000);
+                    setTimeout(() => h.remove(), 15000);
                 }, i * 85);
             }
             const ripple = document.createElement('div');
@@ -878,23 +887,21 @@
                     if (titleElement) titleElement.classList.add('hide-title');
                     if (hintTap) hintTap.classList.add('hide-hint');
 
-                    // ***** NEW ORDER *****
-                    // 1) Start romantic finale immediately (new symbols appear)
+                    // 1) Start romantic finale with falling symbols (top to bottom)
                     startRomanticFinale();
                     
-                    // 2) Fade out all existing symbols (old balloons, hearts, sparkles, etc.)
+                    // 2) Fade out all existing symbols (old balloons, hearts, etc.)
                     fadeOutAllSymbolsImmediately(() => {
-                        // 3) After 5 seconds (increased from 2.5), fade out the final message box
+                        // 3) After 5 seconds, fade out final message box then black veil + credit
                         setTimeout(() => {
                             fadeOutLastMessage(() => {
-                                // 4) Finally, black veil and credit
                                 finalTriggered = true;
                                 finalVeil.classList.add('active');
                                 setTimeout(() => {
                                     showFinalCredit();
                                 }, 600);
                             });
-                        }, 5000); // Increased delay for message to stay longer
+                        }, 5000);
                     });
                 }
             });

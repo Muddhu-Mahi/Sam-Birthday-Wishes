@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
     <style>
-        /* All your original CSS remains exactly the same */
+        /* All original CSS remains exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -288,7 +288,7 @@
             color: #fff8ed;
             z-index: 100;
             opacity: 0;
-            transition: opacity 5s ease 3s;
+            transition: opacity 2.5s ease 0.2s;
             pointer-events: none;
             text-align: center;
             box-sizing: border-box;
@@ -516,35 +516,21 @@
 <script>
     (function() {
         const secretMessages = [
-            // 1. The Grand Opening - The Big Event
             "🎂 Happy Birthday… our family’s Lady Power Star 👑🔥✨",
-
-            // 2. The Initial Vibe - Style & Presence
             "👗 Your style? Just on another level ✨",
             "🔥 Confidence? Not shown… it just naturally happens with you 💯✨",
             "😌 You may seem simple… but your presence is powerful 🌟🔥", 
             "😏 That attitude? The reason you stand out every time 🔥👑",
-
-            // 3. The Natural Charm - The "Aww" Factor
             "✨ Natural beauty… no need for anything extra 🌟💫",
             "😊 Your smile brings a special kind of happiness 💛",
             "🎶 Your laugh is truly joyful to hear 😌💫",
-
-            // 4. The Intelligence & Directness - The "Respect" Factor
             "🧠 Beauty with brilliance… a rare combination 💫📚",
             "💯 You speak straight… no filters, no pretending 😌⚡",
-
-            // 5. The Heart & Kindness - Emotional Depth
             "🐾 Your love for pets is just one example of how caring and kind you are 💖✨",
             "🤍 Your ability to understand others makes you truly special 🌙💞",
             "😌 Your emotions are genuine and strong… that’s something rare 🔥💖", 
-
-            // 6. The Genuine Note - The Personal "Secret"
             "💖 There’s a depth in you that people don’t always notice… but it’s truly special",
-
-            // 7. The Perfect Conclusion - The Final Summary
             "🌸 Modern look… traditional soul… perfect mix 😌🌼✨",
-
             "Happy Birthday, Akka! 🎈🤍 Thank you for being the one who understands everything without me even saying it. I’m so lucky to have an elder sister like you to look up to. Wishing you a year full of happiness, success, and everything you truly deserve 🌸🌙💖"
         ];
         
@@ -558,6 +544,7 @@
         let musicPlayer = null;
         let heartClicked = false;
         let lastPopupMessageDiv = null;
+        let songLoopTimer = null;
 
         const introDiv = document.getElementById('introScreen');
         const dreamscape = document.getElementById('dreamscape');
@@ -671,7 +658,6 @@
         }
         renderParticles();
 
-        // ambient generators
         let activeFloatingHearts = 0;
         const MAX_FLOATING_HEARTS = window.innerWidth < 600 ? 18 : 24;
         function spawnAmbientHeart() {
@@ -749,20 +735,7 @@
             });
         }
 
-        function fadeOutLastMessage(callback) {
-            if (lastPopupMessageDiv) {
-                lastPopupMessageDiv.classList.add('fade-message-out');
-                lastPopupMessageDiv.classList.remove('visible');
-                const onFinish = () => {
-                    if (lastPopupMessageDiv && lastPopupMessageDiv.parentNode) lastPopupMessageDiv.remove();
-                    if (callback) callback();
-                };
-                lastPopupMessageDiv.addEventListener('transitionend', onFinish, { once: true });
-                setTimeout(onFinish, 1000);
-            } else { if(callback) callback(); }
-        }
-
-        function showPopupMessage(text, isLast = false) {
+        function showPopupMessage(text, isLast = false, onRemoved = null) {
             const existing = document.querySelector('.floating-message');
             if (existing) existing.remove();
             const msgDiv = document.createElement('div');
@@ -771,12 +744,24 @@
             document.body.appendChild(msgDiv);
             msgDiv.offsetHeight;
             msgDiv.classList.add('visible');
+
             if (!isLast) {
                 setTimeout(() => {
                     msgDiv.classList.remove('visible');
-                    setTimeout(() => msgDiv.remove(), 1300);
+                    setTimeout(() => {
+                        if (msgDiv.parentNode) msgDiv.remove();
+                        if (onRemoved) onRemoved();
+                    }, 1300);
                 }, 4000);
             } else {
+                // Last message stays for 32 seconds
+                setTimeout(() => {
+                    msgDiv.classList.remove('visible');
+                    setTimeout(() => {
+                        if (msgDiv.parentNode) msgDiv.remove();
+                        if (onRemoved) onRemoved();
+                    }, 1300);
+                }, 15000);
                 lastPopupMessageDiv = msgDiv;
             }
         }
@@ -822,6 +807,7 @@
                 setTimeout(() => {
                     const h = document.createElement('div');
                     h.className = 'heart-shower falling-heart';
+                    h.innerHTML = '❤️';
                     h.style.left = (20 + Math.random() * 60) + '%';
                     h.style.top = '-40px';
                     h.style.fontSize = (28 + Math.random() * 32) + 'px';
@@ -864,12 +850,7 @@
                 if (hintTap) hintTap.classList.add('hide-hint');
                 const isLast = (currentMsgIndex === secretMessages.length - 1);
                 const msg = secretMessages[currentMsgIndex];
-                showPopupMessage(msg, isLast);
-                const rect = balloon.getBoundingClientRect();
-                addBurst(rect.left + rect.width/2, rect.top + rect.height/2, 'rgba(255, 200, 150, 0.8)');
-                balloon.remove();
-                currentMsgIndex++;
-
+                
                 if (isLast && !finalTriggered && !waitingForFinale) {
                     waitingForFinale = true;
                     if (balloonInterval) clearInterval(balloonInterval);
@@ -877,21 +858,28 @@
                     if (glowOrbInterval) clearInterval(glowOrbInterval);
                     if (titleElement) titleElement.classList.add('hide-title');
                     if (hintTap) hintTap.classList.add('hide-hint');
-
+                    
                     startRomanticFinale();
                     
-                    fadeOutAllSymbolsImmediately(() => {
-                        setTimeout(() => {
-                            fadeOutLastMessage(() => {
-                                finalTriggered = true;
-                                finalVeil.classList.add('active');
-                                setTimeout(() => {
-                                    showFinalCredit();
-                                }, 600);
-                            });
-                        }, 5000);
+                    showPopupMessage(msg, true, () => {
+                        fadeOutAllSymbolsImmediately(() => {
+                            finalTriggered = true;
+                            finalVeil.classList.add('active');
+                            setTimeout(() => {
+                                showFinalCredit();
+                            }, 200);
+                        });
                     });
+                    balloon.remove();
+                    currentMsgIndex++;
+                    return;
                 }
+                
+                showPopupMessage(msg, false);
+                const rect = balloon.getBoundingClientRect();
+                addBurst(rect.left + rect.width/2, rect.top + rect.height/2, 'rgba(255, 200, 150, 0.8)');
+                balloon.remove();
+                currentMsgIndex++;
             });
             balloonContainer.appendChild(balloon);
             setTimeout(() => { if (balloon.parentNode) balloon.remove(); }, duration * 1000 + 800);
@@ -915,24 +903,54 @@
             flash.style.transition = 'opacity 0.4s ease';
             document.body.appendChild(flash);
             setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 500); }, 100);
+
             setTimeout(async () => {
                 try {
                     const tag = document.createElement('script');
                     tag.src = "https://www.youtube.com/iframe_api";
                     document.head.appendChild(tag);
+
                     window.onYouTubeIframeAPIReady = () => {
                         const playerDiv = document.createElement('div');
                         playerDiv.id = 'youtube-audio';
                         playerDiv.style.display = 'none';
                         document.body.appendChild(playerDiv);
+
                         musicPlayer = new YT.Player('youtube-audio', {
-                            videoId: 'iuNCZqnZFiY',   // ←←← CHANGED SONG HERE
-                            playerVars: { autoplay: 1, controls: 0, loop: 1, modestbranding: 1, rel: 0, playlist: 'iuNCZqnZFiY' },
-                            events: { onReady: (event) => { event.target.playVideo(); event.target.setVolume(40); } }
+                            videoId: '9pdCsCaDFF4',
+                            playerVars: { 
+                                autoplay: 1, 
+                                controls: 0, 
+                                loop: 0, 
+                                modestbranding: 1, 
+                                rel: 0
+                            },
+                            events: { 
+                                onReady: (event) => { 
+                                    event.target.playVideo(); 
+                                    event.target.setVolume(40); 
+                                },
+                                onStateChange: (event) => {
+                                    if (event.data === YT.PlayerState.PLAYING) {
+                                        if (songLoopTimer) clearInterval(songLoopTimer);
+                                        // Loop every 32 seconds
+                                        songLoopTimer = setInterval(() => {
+                                            if (musicPlayer && typeof musicPlayer.getCurrentTime === 'function') {
+                                                const currentTime = musicPlayer.getCurrentTime();
+                                                if (currentTime >= 32) {
+                                                    musicPlayer.seekTo(0, true);
+                                                }
+                                            }
+                                        }, 500); // Check every 500ms for smooth restart
+                                    }
+                                }
+                            }
                         });
                     };
+
                     if (window.YT && window.YT.Player) window.onYouTubeIframeAPIReady();
                 } catch(err) {}
+
                 introDiv.style.opacity = '0';
                 setTimeout(() => {
                     introDiv.style.display = 'none';
@@ -951,11 +969,10 @@
             if (balloonInterval) clearInterval(balloonInterval);
             if (heartRainInterval) clearInterval(heartRainInterval);
             if (glowOrbInterval) clearInterval(glowOrbInterval);
+            if (songLoopTimer) clearInterval(songLoopTimer);
             if (starAnimationFrame) cancelAnimationFrame(starAnimationFrame);
         });
     })();
 </script>
 </body>
 </html>
-
-musicPlayer

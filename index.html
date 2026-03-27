@@ -946,7 +946,7 @@
                                         songLoopTimer = setInterval(() => {
                                             if (musicPlayer && typeof musicPlayer.getCurrentTime === 'function') {
                                                 const currentTime = musicPlayer.getCurrentTime();
-                                                if (currentTime >= 32) musicPlayer.seekTo(0, true);
+                                                if (currentTime >= 31.4) musicPlayer.seekTo(0, true);
                                             }
                                         }, 500);
                                     }
@@ -981,3 +981,5 @@
 </script>
 </body>
 </html>
+
+if (currentTime >= 32) musicPlayer.seekTo(0, true);

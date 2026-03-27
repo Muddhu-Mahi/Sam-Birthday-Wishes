@@ -32,6 +32,10 @@
             font-family: 'Poppins', sans-serif;
             touch-action: pan-y pinch-zoom;
             position: relative;
+            /* improved text rendering on all devices */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
         #stars-canvas {
             position: fixed;
@@ -67,11 +71,9 @@
             transform: perspective(800px) translateZ(0);
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             filter: drop-shadow(0 15px 25px rgba(255, 150, 190, 0.35));
-            /* refined heartbeat: subtle, steady, faster (0.75s cycle) */
             animation: subtleHeartbeat 0.75s ease-in-out infinite;
             z-index: 10;
         }
-        /* gentle, realistic pulse – not overacting */
         @keyframes subtleHeartbeat {
             0% {
                 transform: perspective(800px) translateZ(0) scale(1);
@@ -155,8 +157,7 @@
             text-align: center;
             padding-top: max(24px, 4vh);
             font-size: clamp(2.8rem, 14vw, 5.6rem);
-            color: white;
-            text-shadow: 0 0 30px #8c8479, 0 0 60px #ff4d6d;
+            color: rgb(153, 152, 152);
             letter-spacing: 2px;
             position: relative;
             display: inline-block;
@@ -167,14 +168,21 @@
             pointer-events: none;
             transition: opacity 0.8s ease;
             will-change: transform;
+            /* ensure no overflow on narrow screens */
+            max-width: 95vw;
+            overflow-x: auto;
+            scrollbar-width: none;
         }
-        .title-magic.hide-title {
-            opacity: 0;
-            visibility: hidden;
+        .title-magic::-webkit-scrollbar {
+            display: none;
         }
         @keyframes titleFloat {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        .title-magic.hide-title {
+            opacity: 0;
+            visibility: hidden;
         }
         .balloon-sky {
             position: absolute;
@@ -319,6 +327,7 @@
             padding: 1rem;
             line-height: 1.4;
             max-width: 85vw;
+            word-break: break-word;
         }
         .final-bottom-text {
             position: absolute;
@@ -476,19 +485,90 @@
             0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
             100% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
         }
+        /* Enhanced mobile text styling - preserves laptop look on phones */
         @media (max-width: 600px) {
             .balloon { width: 70px; height: 88px; }
             .balloon::after { height: 24px; bottom: -22px; }
             .balloon::before { font-size: 0.85rem; bottom: -8px; }
-            .floating-message { padding: 0.9rem 2.5rem; font-size: clamp(1rem, 4.5vw, 1.5rem); max-width: 96vw; min-width: 280px; border-radius: 48px; line-height: 1.35; letter-spacing: 0.5px; }
-            .final-center-text { font-size: clamp(1.2rem, 5vw, 2rem); }
-            .final-bottom-text { font-size: 0.7rem; bottom: 8px; }
-            .title-magic { white-space: nowrap; overflow-x: auto; max-width: 95vw; }
-            .heart-gate { animation: subtleHeartbeat 0.7s ease-in-out infinite; }
+            .floating-message { 
+                padding: 1rem 2rem; 
+                font-size: clamp(1.1rem, 4.8vw, 1.7rem);
+                max-width: 94vw;
+                min-width: 260px;
+                border-radius: 48px;
+                line-height: 1.4;
+                letter-spacing: 0.4px;
+                background: rgba(0,0,0,0.92);
+                backdrop-filter: blur(24px);
+                text-shadow: 0 0 12px rgba(255, 100, 120, 0.95);
+            }
+            .final-center-text { 
+                font-size: clamp(1.1rem, 5.5vw, 2rem);
+                padding: 0.8rem;
+                max-width: 90vw;
+            }
+            .final-bottom-text { 
+                font-size: 0.7rem; 
+                bottom: 8px;
+                letter-spacing: 0.3px;
+            }
+            .title-magic { 
+                white-space: nowrap;
+                font-size: clamp(2rem, 12vw, 4.2rem);
+                letter-spacing: 1px;
+                padding-top: max(16px, 3vh);
+                max-width: 94vw;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .touch-heart {
+                font-size: clamp(1rem, 4.5vw, 1.6rem);
+                margin-top: 20px;
+                padding: 6px 14px;
+                letter-spacing: 0.8px;
+            }
+            .heart-gate {
+                animation: subtleHeartbeat 0.7s ease-in-out infinite;
+                font-size: clamp(70px, 22vw, 110px);
+            }
+            .hint-tap {
+                font-size: 12px;
+                bottom: 18px;
+                padding: 4px 14px;
+                background: rgba(0,0,0,0.5);
+                white-space: nowrap;
+                max-width: 80vw;
+                overflow-x: auto;
+                scrollbar-width: none;
+            }
+            .hint-tap::-webkit-scrollbar {
+                display: none;
+            }
+            .grand-message .final-center-text {
+                text-shadow: 0 0 25px #ffb347, 0 0 45px #ff4d6d;
+            }
+            .burst-heart {
+                font-size: 1.5rem;
+            }
+            .heart-shower {
+                font-size: 1.3rem;
+            }
         }
-        @media (prefers-reduced-motion: reduce) {
-            *, .balloon, .heart-shower, .floating-message { animation: none !important; transition: none !important; }
-            .balloon { display: none; }
+        /* extra fine-tuning for very small devices */
+        @media (max-width: 420px) {
+            .floating-message {
+                padding: 0.85rem 1.5rem;
+                font-size: clamp(1rem, 4.5vw, 1.4rem);
+                min-width: 240px;
+                border-radius: 36px;
+            }
+            .final-center-text {
+                font-size: clamp(1rem, 5vw, 1.7rem);
+            }
+            .title-magic {
+                font-size: clamp(1.8rem, 10vw, 3.2rem);
+                letter-spacing: 0.5px;
+            }
         }
         .hint-tap {
             position: fixed;
@@ -512,6 +592,10 @@
         .hint-tap.hide-hint {
             opacity: 0;
             visibility: hidden;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, .balloon, .heart-shower, .floating-message { animation: none !important; transition: none !important; }
+            .balloon { display: none; }
         }
     </style>
 </head>
@@ -981,5 +1065,3 @@
 </script>
 </body>
 </html>
-
-if (currentTime >= 32) musicPlayer.seekTo(0, true);

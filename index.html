@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>✦ For Sam... ✦</title>
+    <title>✦ For Sam ... ✦ | Birthday Magic</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
@@ -33,8 +33,6 @@
             touch-action: pan-y pinch-zoom;
             position: relative;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
         #stars-canvas {
             position: fixed;
@@ -167,11 +165,11 @@
             margin-bottom: 70px;
         }
         #particle-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 80; }
-        .heart-shower { position: absolute; font-size: 1.6rem; pointer-events: none; animation: floatHeartSoft 7s linear forwards; z-index: 90; will-change: transform; transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);}
+        .heart-shower { position: absolute; font-size: 1.6rem; pointer-events: none; animation: floatHeartSoft 7s linear forwards; z-index: 90; will-change: transform; }
         @keyframes floatHeartSoft { 0% { transform: translateY(0) rotate(0deg); opacity: 0.9; } 100% { transform: translateY(-130vh) rotate(360deg); opacity: 0; } }
-        .glow-orb { position: absolute; background: radial-gradient(circle, #ffdd99, #ffb347); border-radius: 50%; filter: blur(2px); pointer-events: none; animation: floatUpGlow 8s linear forwards; z-index: 85; opacity: 0; will-change: transform; transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);}
+        .glow-orb { position: absolute; background: radial-gradient(circle, #ffdd99, #ffb347); border-radius: 50%; filter: blur(2px); pointer-events: none; animation: floatUpGlow 8s linear forwards; z-index: 85; opacity: 0; will-change: transform; }
         @keyframes floatUpGlow { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
-        .burst-heart { position: fixed; pointer-events: none; font-size: 1.8rem; z-index: 10002; animation: burstFloat 1.2s ease-out forwards; will-change: transform, opacity; transition: opacity 0.65s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.65s cubic-bezier(0.2, 0.9, 0.4, 1);}
+        .burst-heart { position: fixed; pointer-events: none; font-size: 1.8rem; z-index: 10002; animation: burstFloat 1.2s ease-out forwards; will-change: transform, opacity; }
         @keyframes burstFloat { 0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--dx, 40px), var(--dy, -80px)) scale(0.3) rotate(360deg); opacity: 0; } }
         .grand-message.pulse-glow { animation: gentlePulse 2s infinite ease-in-out; }
         @keyframes gentlePulse { 0%,100% { text-shadow: 0 0 10px #ffb347, 0 0 20px #ff4d6d; } 50% { text-shadow: 0 0 30px #ffb347, 0 0 50px #ff4d6d; } }
@@ -201,7 +199,7 @@
 <div id="dreamscape">
     <h1 class="title-magic">Sam...</h1>
     <div id="balloonContainer" class="balloon-sky"></div>
-    <div class="hint-tap">🎈 Just a touch… 🎈</div>
+    <div class="hint-tap">🎈 Pop a balloon → a secret message 🎈</div>
 </div>
 <div id="romanticVeil" class="romantic-veil"></div>
 <div id="final-veil"></div>
@@ -210,6 +208,31 @@
 
 <script>
     (function() {
+        // ---------- ALL 14 PHOTOS in exact order (S1 to S14) ----------
+        const balloonImages = [
+            "https://ik.imagekit.io/njn8geuh0/S24.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S17.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S32.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S31.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S28.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S27.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S26.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S20.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S22.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S36.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S21.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S23.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S18.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S24.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S25.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S29.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S34.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S35.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S19.jpeg",
+            "https://ik.imagekit.io/njn8geuh0/S40.jpeg"
+        ];
+        
+        // Beautiful birthday messages (20 total)
         const secretMessages = [
             "🎂🌹✨ Happy Birthday, Sam… our family’s Lady Power Star 👑💖🎉",
             "👗💃 Sam, your style? Just on another level 🌟🕶️",
@@ -220,7 +243,7 @@
             "💖✨ Natural beauty… no filters needed 🌸🌷",
             "😊💕 Your smile brings a special kind of happiness 🌼🤍",
             "🎶😄 Your laugh is really nice to hear… better than any playlist 💫🎵",
-            "👀⚡ Your eyes… honestly, they’re a little dangerous 💖🌸—one look, it’s hard to look away 🔥",
+            "👀⚡ Your eyes… honestly, they’re a little dangerous 💖🌸 — one look, it’s hard to look away 🔥",
             "🧠💎 Beauty with brilliance… a truly rare combination 📚✨",
             "💯🔥 You speak straight… real and unfiltered ⚡💥",
             "🐾💖 Your love for pets is just one example of how caring and kind you are 🐶❤️",
@@ -232,8 +255,9 @@
             "🌟😊💖 …hope you have a smile on your face 🥰 I wish I could see it, but I’m not there ✨🌸",
             "🎈🎉 Once again Happy Birthday, Sam! 💖🥳 Thank you for always understanding me even without words 🥰💕 Wishing you a year filled with happiness 😊🌸, success 💼🚀, and everything your beautiful heart deserves… 💎❤️"
         ];
-        const balloonImages = ["https://ik.imagekit.io/njn8geuh0/IMG_20240411_174238.jpg"];
+        
         let currentMsgIndex = 0;
+        let currentImageIndex = 0;    // <-- sequential image index (0 to 13, then wraps)
         let balloonInterval = null;
         let heartRainInterval = null;
         let glowOrbInterval = null;
@@ -255,7 +279,7 @@
 
         const balloonColors = ['#FF9FBB', '#F6AE9A', '#D9B4FF', '#FFD966', '#F4ACB7', '#A7C7E7', '#FFB3BA', '#C3A5F0'];
 
-        // Stars Canvas
+        // Stars background
         const starCanvas = document.getElementById('stars-canvas');
         const starCtx = starCanvas.getContext('2d');
         let starsArray = [];
@@ -291,7 +315,7 @@
             starAnimationFrame = requestAnimationFrame(animateStars);
         }
 
-        // Particle System
+        // Particle explosion system
         const particleCanvas = document.getElementById('particle-canvas');
         const pCtx = particleCanvas.getContext('2d');
         let particles = [];
@@ -348,7 +372,7 @@
         }
         renderParticles();
 
-        // Ambient Effects
+        // Ambient floating hearts & orbs
         let activeFloatingHearts = 0;
         const MAX_FLOATING_HEARTS = window.innerWidth < 600 ? 18 : 24;
         const floatingSymbols = ['✨', '💫', '💖', '💕', '🌸', '🦋', '🎈', '🌙'];
@@ -405,7 +429,7 @@
         }
 
         function fadeOutBalloonsAndDecorations() {
-            const elements = document.querySelectorAll('.balloon, .heart-shower, .glow-orb, .burst-heart, .sparkle');
+            const elements = document.querySelectorAll('.balloon, .heart-shower, .glow-orb, .burst-heart');
             elements.forEach(el => {
                 void el.offsetWidth;
                 el.classList.add('symbol-fade-out');
@@ -417,14 +441,12 @@
         function showPopupMessage(text, onRemoved = null, durationMs = 4000) {
             const existing = document.querySelector('.floating-message');
             if (existing) existing.remove();
-            
             const msgDiv = document.createElement('div');
             msgDiv.className = 'floating-message';
             msgDiv.textContent = text;
             document.body.appendChild(msgDiv);
             msgDiv.offsetHeight;
             msgDiv.classList.add('visible');
-            
             setTimeout(() => {
                 msgDiv.classList.remove('visible');
                 setTimeout(() => {
@@ -443,17 +465,28 @@
             finalVeil.classList.add('active');
         }
 
+        // ---------- FIX: Balloon images appear IN ORDER (S1, S2, S3 ... S14, then cycle) ----------
         function spawnBalloon() {
             if (finalTriggered || waitingForFinale) return;
             if (currentMsgIndex >= secretMessages.length) return;
 
             const balloon = document.createElement('div');
             balloon.className = 'balloon';
-            balloon.style.backgroundImage = `url('${balloonImages[0]}')`;
+            
+            // Get next image in sequence, then increment (wrap around)
+            const imageUrl = balloonImages[currentImageIndex];
+            currentImageIndex = (currentImageIndex + 1) % balloonImages.length;
+            
+            balloon.style.backgroundImage = `url('${imageUrl}')`;
             balloon.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
             balloon.style.left = (5 + Math.random() * 85) + "%";
             const duration = 14 + Math.random() * 10;
             balloon.style.setProperty('--float-duration', duration + "s");
+
+            // fallback in case any image fails to load
+            balloon.addEventListener('error', () => {
+                balloon.style.backgroundImage = `url('https://ik.imagekit.io/njn8geuh0/S1.jpeg')`;
+            });
 
             balloon.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -492,10 +525,9 @@
             setTimeout(() => { if (balloon.parentNode) balloon.remove(); }, duration * 1000 + 800);
         }
 
-        // ====================== CONTINUOUS 32 SECOND LOOP SONG ======================
+        // ---------- LOOPING SONG (32 sec loop) ----------
         function startSong() {
             if (youtubePlayer) return;
-
             const playerDiv = document.createElement('div');
             playerDiv.id = 'youtube-audio';
             playerDiv.style.display = 'none';
@@ -515,8 +547,6 @@
                         onReady: function(event) {
                             event.target.playVideo();
                             event.target.setVolume(40);
-                            
-                            // Continuous 32-second loop - never stops
                             songLoopTimer = setInterval(() => {
                                 if (youtubePlayer) {
                                     youtubePlayer.seekTo(0, true);
@@ -533,13 +563,12 @@
                     }
                 });
             };
-
             const tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             document.head.appendChild(tag);
         }
-        // =================================================================
 
+        // Heart intro & reveal world
         function handleHeartTouch() {
             if (heartClicked) return;
             heartClicked = true;
@@ -551,7 +580,6 @@
             spawnHeartBurst(rect.left + rect.width / 2, rect.top + rect.height / 2);
             addBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, '#ff99cc');
 
-            // Flash effect
             const flash = document.createElement('div');
             flash.style.position = 'fixed';
             flash.style.inset = '0';
@@ -566,18 +594,13 @@
                 setTimeout(() => flash.remove(), 500);
             }, 100);
 
-            // Start everything
             setTimeout(() => {
                 introDiv.style.opacity = '0';
-                
                 setTimeout(() => {
                     introDiv.style.display = 'none';
                     dreamscape.classList.add('reveal');
+                    startSong(); 
 
-                    // Start song immediately and continuously
-                    startSong();
-
-                    // Start balloons and effects
                     balloonInterval = setInterval(() => {
                         if (!finalTriggered && !waitingForFinale) spawnBalloon();
                     }, 2200);
@@ -590,7 +613,6 @@
                         if (!finalTriggered && !waitingForFinale) spawnGlowOrb();
                     }, 2000);
 
-                    // Initial balloons
                     for (let i = 0; i < 3; i++) {
                         setTimeout(spawnBalloon, i * 500);
                     }
